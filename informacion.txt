@@ -1,0 +1,85 @@
+
+
+
+
+							TETRIS ESTATICO
+
+
+
+
+
+
+	- Eje de coordenadas
+	- Tipos de datos para cada elemento. 
+		. Figuras: listas, como las habia pensado
+		. Tablero: tiene que ser un string. Sin embargo tiene que estar respaldado por una lista
+		Tal y como lo habia pensado.
+	- Descartamos los strings como metodos directos ya que los metodos para su manipilacion son muy limitados.
+	Sin embargo es la unica forma de una representacion visual directa sin usar bibliotecas externas.
+	- Definicion de las figuras.
+	-
+
+
+
+	
+
+			SECUENCIA DEL JUEGOS
+
+	
+	- Salida de las figuras. Aleatoredad.
+	- Secuencia de turnos.
+	- Movimiento
+	- Mapeo de las figuras. Posicionamiento
+	- Colision
+	- Fijamiento de figuras.
+	- Lineas
+
+
+
+
+
+=========================================================================================
+
+
+
+			NUEVO SISTEMA DE POSICIONAMIENTO
+
+	
+
+
+		Estatico
+
+
+	- Limites del tablero
+	- Colision
+
+
+		
+		Secuencia del turno
+	
+
+	- Figura: 
+		. Tipo de figura o seleccion de una nueva
+		. Coordenadas exactas de cada elemento de la figura al terminar el turno.
+	- Selecccion de movimiento
+	- Calculo del movimiento
+	- Movimiento automatico/inercia
+	- Calculo del movimiento
+	- Coordenadas exactas del posicionamiento de la figura al termino del movimiento
+	- verificacion de los limites/colision
+	- Lineas¿?
+	- Dibujado del turno
+	
+
+
+====================
+
+
+		Figuras
+	
+	- Voy a usar un diccionarios para definirlas.
+	- Un aparatado contendra una lista/listas con su represnetacion de sus elementos
+	- Otro aparatdo que se renovara cada turno contendra la posicion exacta de cada elemento en la lista que representa la 
+	pantalla. Estaran ubicados por indices en la lista de la pantalla
+
+	
