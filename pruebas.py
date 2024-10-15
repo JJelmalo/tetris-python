@@ -105,6 +105,9 @@ Presione cualquier otra tecka para salir del juego.
 if __name__ == "__main__":
 
     controlador = True
-    programa()
-    print("BOOMMMMM!!!!!!!!!!!!!!!")
-    controlador = control(controlador)
+    #programa()
+    #print("BOOMMMMM!!!!!!!!!!!!!!!")
+    #controlador = control(controlador)
+    pass
+
+

@@ -33,6 +33,9 @@
 # si seria mejor hacerlo cun matriz 2D.
 
 
+# C: Pruebas/PROGRAMACION/Repositorios/Tetris
+
+
 
 
 
@@ -285,21 +288,51 @@ def limites_figura_horizontal(coordenadas:list, movimiento:int)->bool:
     return False
         
     
-# Funcion para comprobar las colisiones
-def colision(coordenadas:list, screen:tuple):
+# Funcion para obtener las coordenadas de las piezas colocadas.
+def indices_colision(coordenadas:list, screen:tuple, indices:list):
 
-    print(coordenadas)
-    print(screen)
-    for caracter in coordenadas:
-        if screen.index(caracter) == pix_ng:
-            True
+    """
+    if pix_ng not in screen:
+        print("lista de colisiones", indices)
+        return indices
+    
+    indices_pix_ng = []
+    for indice,x in enumerate(screen):
+        if x == pix_ng:
+            indices_pix_ng.append(indice+1)
+    """
+    nuevos_indices = coordenadas.copy()
+    lista_colision = indices + nuevos_indices
+    #print("Indice_pix_ng", indices_pix_ng)
+    print("lista de colision", lista_colision)
+
+    return lista_colision
+        
+
+def colision(coordenadas:list, lista_colision:list):
+
+    rango_colision = list(map(lambda x: x-10, lista_colision))
+    #rango_colision = list(rango_colision)
+    print("Rango de colision", rango_colision)
+    print("Coordenadas", coordenadas)
+    #print("BOLEANO", any(coordenadas == list(rango_colision)))
+    print(list(filter(lambda x: x in rango_colision, coordenadas)))
+
+    if list(filter(lambda x: x in rango_colision, coordenadas)):
+        print("Is True")
+        return True
+    
+    else:
+        return False
+
+
 
 
 def limites_vertical(coordenadas:list):
 
     limite_v = [x for x in range(191,201)]
-    print(coordenadas)
-    print(limite_v)
+    #print(coordenadas)
+    #print(limite_v)
 
     # Comprovacion limites verticales
     for coordenada in coordenadas:
@@ -354,6 +387,7 @@ if __name__ == "__main__":
 
 # Secuencia
     comienzo = True
+    lista_colision = []
     while True:
         if comienzo:
             print("Yes")
@@ -367,8 +401,10 @@ if __name__ == "__main__":
         ord = ordenes()
         print(coordenadas)
         coordenadas = calculo_movimiento(coordenadas, ord)
-        if limites_vertical(coordenadas):
+        if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
             screen = pantalla_pix(coordenadas, screen)
+            lista_colision = indices_colision(coordenadas, screen, lista_colision)
+            #colision(coordenadas, lista_colision)
             comienzo = True
         print(coordenadas)
         pantalla_prueba(coordenadas, screen)
