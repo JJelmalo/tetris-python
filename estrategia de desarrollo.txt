@@ -1,0 +1,97 @@
+"""
+Resolucion:
+    Vamos a hacerlo con funciones
+    1. Necesitamos los dos tipo de pixeles. Para conseguirlos los hemos copìado de imagen que viene en el link de arriba.
+    2. Los pixeles son strings, son signos, no son imagenes. Y la matriz es una lista de listas
+    3. La pantalla sera representada como una matriz bidimensional.
+    4. Tiene que "turnos", cada turno repesenta un lapso de tiempo, en el cual la pieza avanza.
+    5. Tiene que haber una zona de salida, a ser posible en la zona central de la pantalla.
+    6. Cada moviemiento de pieza tiene un dibujo diferente.
+    7. En el caso de hacer un desarrollo completo, con caida y teclado, habria que ejecutar un hilo adiccional que controlara el teclado. 
+    O un hilo adicional que controlara la caída de la pieza. Uno de los dos seria la secuencia principal de codigo y el otro un hilo 
+    complementario que se ejecutara en paralelo.
+    8. Tratamiento integral: git + github + apifast, todo para recordar y ensayar.
+
+    
+NOTA:
+    EL SISTEMA DE COORDENADAS NO FUNCIONA BIEN. HAY UN ERROR DE BASE, QUE LO TRASTOCA TODO. SOLO FUNCIONA CON EL CUADRADO A BASE DE PRUEBA 
+    ERROR PERO NO HAY UN DISEÑO COHERENTE DEL FUNCIONAMIENTO DE COORDENADAS. 
+
+    LO DEJO AQUI PORQUE REHACERLO IMPLICA CASI EMPEZAR DE NUEVO Y ME LLEVARIA HORAS
+
+    ES LA CONSECUENCIA DE NO PLANIFICAR LO QUE VOY A HACER Y DE LA FALTA DE EXPERIENCIA EN GENERAL. PESE A TODO EL SISTEMA ES MUY CURIOSO E 
+    INGENIOSO, PARTICULARMENTE TENIENDO EN CUENTA QUE LO HICE A BOTE PRONTO.
+
+"""
+
+from getpass import getpass
+from random import randint
+
+
+# INTENTO PROPIO
+
+# Instrcciones por pantalla
+# print()
+
+screen = (("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
+    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"))
+
+screen_l = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲")
+
+
+
+#=============================================================================================#
+
+# SECUENCIA
+    
+#   1. Comprobacion de lanzamiento nueva figura si procede. ¿Marcador? ---> Dibujado
+#   2. Ordenes
+#   3. Calculos de las ordenes + movimiento automatico
+#   4. Dibujado. Tal y como lo hacia antes. Primero lo llevamos a la lista y despues al string.
+#   5. Consecuencias si procede: nueva figura. ¿Lineas?
+
+# Perdurancia del lienzo. Tupla y lista
+
+# Las figuras. Cada posicion una clave/valor. Otro para la posicion en uso siendo el valor la clave de la posicion. Las coordenadas en 
+#   indices de la tupla de la pantalla.
+#   . En realidad no necesito la representacion grafica que por otro lado es solo eso, una representacion visual para mi, en el fondo, 
+#   con las coordenadas de cada elemento no necesito nada mas para dibujarlo
+#   . La represnetacion en indices de las figuras seguira la secuencia logica de su traslacion a una lista. Ciertas figuras requeriran mas 
+#   agudeza
+#   . Los giros seran especialmente complicados, ya que primero giraran sobre su eje, y despues se le aplcara el movimiento automatico
+
+
+# RESUMEN: Vamos calculando las coordenadas de la figura, pasandolas por parametro para sufrir las oportunas modificaciones hasta su 
+# representacion final, que termina con el turno
+
+
+
+# SECUENCIA II  ---  Dos hilos paralelos:
+
+#   1. Seleccion de figura - si procede
+#   2. Un hilo controla el movimiento mediante el teclado - Bucle
+#   3. Otro hilo controla toda la parte logica, el movimiento constante y la represnetacion en pantalla - Bucle.
+#   El movimiento constante quizas merezca un hilo propio. Estudiar.
+#   Tiene que haber una representacion constante y actualizada y esto quizas si que neceste de otro hilo
+#   Secuencia del hilo logico:
+#       . Seleccion de pieza/ comprobacion de pieza
+#       . Caida de la pieza, movimiento de la pieza y su representacion visual.
+#       . Colocaion de la pieza - linea. Representacion visual.
+#       . Puntuacion - final partida.

@@ -21,7 +21,6 @@ import threading
 from random import randint
 import time
 
-controlador = True
 
 # Esta funcion va a ser el hilo, controlada por la variable externa "controlador"
 def funcion():
@@ -72,20 +71,40 @@ def programa():
     hilo1.join()
     
 
+# funcion temporal para comprobar el movimiento en main.py.
+def ordenes():
+    print("""
+\nPresione la letra 'a' para moverse a la izquierda.
+Presione la letra 'd' para moverse a la derecha.
+Presione la letra 's' para avanzar hacia abajo.
+Presione la letra 'g' para girar la figura.
+Presione cualquier otra tecka para salir del juego.
+        """)
+    
+    x = input()
 
-programa()
-print("BOOMMMMM!!!!!!!!!!!!!!!")
-controlador = control(controlador)
-
-#while True:
-#    t2 = time.time()
-#    if t2 == t:
-#        print("Es la hora")
-#        break
-
+    if x == "a":
+        movimiento = -1
+        return movimiento
+    elif x == "d":
+        movimiento = 1
+        return movimiento
+    elif x == "s":
+        movimiento = 0
+        return movimiento
+    elif x == "g":
+        movimiento = 5
+        return movimiento
+    else:
+        print("Adios.")
+        exit()
 
 
 
 
 if __name__ == "__main__":
-    pass
+
+    controlador = True
+    programa()
+    print("BOOMMMMM!!!!!!!!!!!!!!!")
+    controlador = control(controlador)

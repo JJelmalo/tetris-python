@@ -34,112 +34,74 @@
 
 
 
-"""
-Resolucion:
-    Vamos a hacerlo con funciones
-    1. Necesitamos los dos tipo de pixeles. Para conseguirlos los hemos copìado de imagen que viene en el link de arriba.
-    2. Los pixeles son strings, son signos, no son imagenes. Y la matriz es una lista de listas
-    3. La pantalla sera representada como una matriz bidimensional.
-    4. Tiene que "turnos", cada turno repesenta un lapso de tiempo, en el cual la pieza avanza.
-    5. Tiene que haber una zona de salida, a ser posible en la zona central de la pantalla.
-    6. Cada moviemiento de pieza tiene un dibujo diferente.
-    7. En el caso de hacer un desarrollo completo, con caida y teclado, habria que ejecutar un hilo adiccional que controlara el teclado. 
-    O un hilo adicional que controlara la caída de la pieza. Uno de los dos seria la secuencia principal de codigo y el otro un hilo 
-    complementario que se ejecutara en paralelo.
-    8. Tratamiento integral: git + github + apifast, todo para recordar y ensayar.
 
-    
-NOTA:
-    EL SISTEMA DE COORDENADAS NO FUNCIONA BIEN. HAY UN ERROR DE BASE, QUE LO TRASTOCA TODO. SOLO FUNCIONA CON EL CUADRADO A BASE DE PRUEBA 
-    ERROR PERO NO HAY UN DISEÑO COHERENTE DEL FUNCIONAMIENTO DE COORDENADAS. 
-
-    LO DEJO AQUI PORQUE REHACERLO IMPLICA CASI EMPEZAR DE NUEVO Y ME LLEVARIA HORAS
-
-    ES LA CONSECUENCIA DE NO PLANIFICAR LO QUE VOY A HACER Y DE LA FALTA DE EXPERIENCIA EN GENERAL. PESE A TODO EL SISTEMA ES MUY CURIOSO E 
-    INGENIOSO, PARTICULARMENTE TENIENDO EN CUENTA QUE LO HICE A BOTE PRONTO.
-
-"""
 
 from getpass import getpass
 from random import randint
 
-
-# INTENTO PROPIO
-
-# Instrcciones por pantalla
-# print()
-
-screen = (("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"),
-    ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲"))
-
-screen_l = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲")
-
-
-
-#=============================================================================================#
-
-# SECUENCIA
-    
-#   1. Comprobacion de lanzamiento nueva figura si procede. ¿Marcador? ---> Dibujado
-#   2. Ordenes
-#   3. Calculos de las ordenes + movimiento automatico
-#   4. Dibujado. Tal y como lo hacia antes. Primero lo llevamos a la lista y despues al string.
-#   5. Consecuencias si procede: nueva figura. ¿Lineas?
-
-# Perdurancia del lienzo. Tupla y lista
-
-# Las figuras. Cada posicion una clave/valor. Otro para la posicion en uso siendo el valor la clave de la posicion. Las coordenadas en 
-#   indices de la tupla de la pantalla.
-#   . En realidad no necesito la representacion grafica que por otro lado es solo eso, una representacion visual para mi, en el fondo, 
-#   con las coordenadas de cada elemento no necesito nada mas para dibujarlo
-#   . La represnetacion en indices de las figuras seguira la secuencia logica de su traslacion a una lista. Ciertas figuras requeriran mas 
-#   agudeza
-#   . Los giros seran especialmente complicados, ya que primero giraran sobre su eje, y despues se le aplcara el movimiento automatico
-
-
-
-# RESUMEN: Vamos calculando las coordenadas de la figura, pasandolas por parametro para sufrir las oportunas modificaciones hasta su 
-# representacion final, que termina con el turno
-
-
 import recursos
+import time
+import threading
+import enum
 
-def pantalla_prueba(figura:list):
+from pruebas import ordenes
+
+
+# variables externas (inmutables)
+pix_bn = "🔲"
+pix_ng = "🔳"
+
+dimensiones_pantalla = [20, 10]
+largo = dimensiones_pantalla[0]
+ancho = dimensiones_pantalla[1]
+
+screen = [pix_bn for _ in range(1, 201)]
+
+
+# Fija las figuras a la pantalla
+def pantalla_pix(coordenadas:list, screen:tuple)->tuple:
+    
+    screen = list(screen)
+
+    imagen = ""
+
+    # Creando la imagen en la pantalla (lista)
+    for elemento in coordenadas:
+        screen.pop(elemento-1)
+        screen.insert(elemento-1, pix_ng)
+    #print(screen)
+    count = 1
+    for caracter in screen:
+        if count == 10:
+            imagen = imagen + caracter + "\n"
+            count = 0
+        else:
+            imagen = imagen + caracter
+        count += 1
+
+    return tuple(screen)
+
+    
+
+def pantalla_prueba(coordenadas:list, screen:tuple):
     'Dibuja la figura en la pantalla'
 
-    pix_bn = "🔲"
-    pix_ng = "🔳"
     # Creamos la pantalla en blanco-scream y asi nos evitamos pasarla por parametro. Usamos el guion bajo.
-    screen = []
-    for i in range(1, 101):
-        if i//10 == int:
-            screen.append("🔲\n")
-        else:
-            screen.append("🔲")
+    screen = list(screen)
+    #for i in range(1, 201):
+    #    if i//10 == int:
+    #        screen.append("🔲\n")
+    #    else:
+    #        screen.append("🔲")
+
+    #print(screen)
 
     # Adaptaciones de los parametros
     #screen = list(screen)
     imagen = ""
 
     # Creando la imagen en la pantalla (lista)
-    for elemento in figura:
+    for elemento in coordenadas:
         screen.pop(elemento-1)
         screen.insert(elemento-1, pix_ng)
     #print(screen)
@@ -155,19 +117,30 @@ def pantalla_prueba(figura:list):
 
 
 
+# Funcion para la seleccion de nuevas piezas
+def salida(figuras:dict) -> dict:
 
-def figuras_prueba(figuras:dict, reinicio=False, coordenadas=[]):
+    lista = list(figuras.keys())
+    indice = randint(0, (len(lista))-1)
+    figura = figuras[lista[indice]]
+
+    return figura
+
+
+# Funcion de dibujado en patalla
+def figura_prueba(figura:dict, coordenadas=[]):
     "gestiona la selecion de figuras y sus coordenadas al principio del turno, incluyendo la gestion de los giros"
 
     # Seleccion de figura - Nueva figura
-    if reinicio:
-        print("reniciuo")
-        figuras = figuras
-        lista = list(figuras.keys())
-        indice = randint(0, (len(lista))-1)
-        figura = figuras[lista[indice]]
-        figura["posicion"] = 1
-        return list(figura["1ini"])
+    #if reinicio:
+    #    print("reniciuo")
+    #    figuras = figuras
+    #    lista = list(figuras.keys())
+    #    indice = randint(0, (len(lista))-1)
+    #    figura = figuras[lista[indice]]
+    #    figura["posicion"] = 1
+    #    return list(figura["1ini"])
+
 
     # Formulas para la automaticion del despliegue de las figuras (obtencion de los indices automaticos).
     # formula para que halle posicion absoluta de cualquier figura, definida sus elementos en indices
@@ -180,7 +153,7 @@ def figuras_prueba(figuras:dict, reinicio=False, coordenadas=[]):
     # Giro
     # Giran un coeficiente que se suma a los elmentos. Gira sobre un eje que es un elmeneto que no cambia su coordenada. Y giran en una 
     # direccion, que esta definida en + ó - segun el punto en el eje de ordenadas (mitad de las posiciones +, mitad negativo).
-    figura = figuras['recta']
+    figura = figura
     if coordenadas: 
         if figura["nombre"]=="recta":
             nuevas_coordenadas = []
@@ -289,24 +262,83 @@ def figuras_prueba(figuras:dict, reinicio=False, coordenadas=[]):
                         nuevas_coordenadas.append(x)
                 figura['posicion'] = 0
                 return nuevas_coordenadas
+            
+    else:
+        coordenadas = figura['1ini']
+        return list(coordenadas)
 
 
+def limites_figura_horizontal(coordenadas:list, movimiento:int)->bool:
+    
+    limite_h_de = [x for x in range(1, ancho*largo+1) if x%10 == 0]  # ¿filter?
+    limite_h_iz = [x+1 for x in limite_h_de if x<200]             # ¿map?
+    #print(coordenadas, movimiento)
+    #print(limite_h_iz)
+    #print(limite_h_de)
 
-def movimiento(coordenadas):
+    for coordenada in coordenadas:
+        if coordenada in limite_h_de and movimiento == 1:
+            return True
+        elif coordenada in limite_h_iz and movimiento == -1:
+            return True
+
+    return False
+        
+    
+# Funcion para comprobar las colisiones
+def colision(coordenadas:list, screen:tuple):
+
+    print(coordenadas)
+    print(screen)
+    for caracter in coordenadas:
+        if screen.index(caracter) == pix_ng:
+            True
+
+
+def limites_vertical(coordenadas:list):
+
+    limite_v = [x for x in range(191,201)]
+    print(coordenadas)
+    print(limite_v)
+
+    # Comprovacion limites verticales
+    for coordenada in coordenadas:
+        if coordenada in limite_v:
+            return True
+        
+    return False
+
+
+# Calcula las coordenadas despues de cada movimiento 
+def calculo_movimiento(coordenadas:list, movimiento:int):
     "Incluye el movimiento ordenado y el automatico"
 
-    dimensiones_pantalla = [10, 10]
-    largo = dimensiones_pantalla[0]
-    ancho = dimensiones_pantalla[1]
+    # Comprobacion de los limites horizontales
+    if limites_figura_horizontal(coordenadas, movimiento):
+        return coordenadas
 
     # Indices para calculo del movimiento vertical y horizontal.
-    n = 1 # o -1. Es la direccion del movimiento
-    movimiento_verticax1 = [x + largo*n for x in coordenadas]
-    movimiento_horizonxl = [x + n for x in coordenadas]
-    movimiento_final = []
+    n = movimiento # o -1. Es la direccion del movimiento
+    match movimiento:
+        case 1:
+            # movimiento horizontal derecha
+            coordenadas_nuevas = [x + n for x in coordenadas]
+        case -1:
+            # movimiento horizontal izquierda
+            coordenadas_nuevas = [x + n for x in coordenadas]
+        case 0:
+            # movimiento vertical
+            coordenadas_nuevas = [x + ancho for x in coordenadas]
+        case 5:
+            print("\nADIOS")
+            exit()
+
+    # Control de colision
+    #if colision(coordenadas_nuevas,screen):
+        #return coordenadas, True
 
     # Retorna las coordenadas de la figura una vez aplicado el movimiento
-    return movimiento_final
+    return coordenadas_nuevas
 
 
 def logica():
@@ -315,15 +347,38 @@ def logica():
 
 
 if __name__ == "__main__":
-    reinicio = True
-    if reinicio:
-        coordenadas = figuras_prueba(recursos.figuras, reinicio=reinicio)
 
-    else:    
-        figura = figuras_prueba(recursos.figuras, coordenadas=[4, 5, 6, 7])
-        pantalla_prueba(screen_l, figura)
+# Variables importantes:
+    # coordenadas
+    # figura
 
-    pantalla_prueba(coordenadas)
+# Secuencia
+    comienzo = True
+    while True:
+        if comienzo:
+            print("Yes")
+            figura = salida(recursos.figuras)
+            comienzo = False
+            fijacion = False
+            coordenadas = figura_prueba(figura)
+            print(coordenadas)
+        pantalla_prueba(coordenadas,screen)
+        print(coordenadas)
+        ord = ordenes()
+        print(coordenadas)
+        coordenadas = calculo_movimiento(coordenadas, ord)
+        if limites_vertical(coordenadas):
+            screen = pantalla_pix(coordenadas, screen)
+            comienzo = True
+        print(coordenadas)
+        pantalla_prueba(coordenadas, screen)
+        print(coordenadas)
+
+
+
+
+
+# Coordenadas en rotacion de las figuras
 
 # (5, 15, 25, 26)
 # (4, 5, 6, 14)
@@ -333,3 +388,5 @@ if __name__ == "__main__":
 # (5, 15, 25, 35)
 # (4, 5, 6, 7)
 # -1, -10, -19, -28
+
+print(2//10)
