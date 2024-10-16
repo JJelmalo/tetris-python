@@ -1,6 +1,9 @@
 # Recursos
 
 
+from enum import Enum, IntEnum
+
+
 
 # Pantalla
 pix_bn = "🔲"
@@ -36,7 +39,9 @@ figuras = {"recta" : {"nombre" : "recta",
 
                      "eje_giro" : 0,
 
-                     "posicion" : 1,
+                     "posicion" : 0,
+
+                     "posiciones" : 2,
 
                      "coordenadas" : [int, int, int, int]
                     },
@@ -69,8 +74,46 @@ figuras = {"recta" : {"nombre" : "recta",
 
                     "eje_giro" : 2,
 
-                    "posicion" : 3,
+                    "posicion" : 0,
+
+                    "posiciones" : 4,
 
                     "coordenadas" : [int, int, int, int]
                     },
     }
+
+
+
+# Clase enum para controlar el movimiento
+class Movimiento(IntEnum):
+    
+    IZQUIERDA = -1
+    DERECHA = 1
+    ABAJO = 0
+    GIRO = 5
+    #SALIDA = 6
+
+
+# funcion temporal para comprobar el movimiento en main.py.
+def ordenes() -> Movimiento :
+    print("""
+\nPresione la letra 'a' para moverse a la izquierda.
+Presione la letra 'd' para moverse a la derecha.
+Presione la letra 's' para avanzar hacia abajo.
+Presione la letra 'p' para girar la figura.
+Presione cualquier otra tecka para salir del juego.
+        """)
+    
+    x = input()
+
+    if x == "a":
+        return Movimiento.IZQUIERDA
+    elif x == "d":
+        return Movimiento.DERECHA
+    elif x == "s":
+        return Movimiento.ABAJO
+    elif x == "p":
+        return Movimiento.GIRO
+    else:
+        print("Adios.")
+        exit()

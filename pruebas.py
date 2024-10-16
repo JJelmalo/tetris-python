@@ -77,7 +77,7 @@ def ordenes():
 \nPresione la letra 'a' para moverse a la izquierda.
 Presione la letra 'd' para moverse a la derecha.
 Presione la letra 's' para avanzar hacia abajo.
-Presione la letra 'g' para girar la figura.
+Presione la letra 'p' para girar la figura.
 Presione cualquier otra tecka para salir del juego.
         """)
     
@@ -91,6 +91,9 @@ Presione cualquier otra tecka para salir del juego.
         return movimiento
     elif x == "s":
         movimiento = 0
+        return movimiento
+    elif x == "p":
+        movimiento = 2
         return movimiento
     elif x == "g":
         movimiento = 5

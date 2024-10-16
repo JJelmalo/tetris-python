@@ -47,7 +47,7 @@ import time
 import threading
 import enum
 
-from pruebas import ordenes
+#from pruebas import ordenes
 
 
 # variables externas (inmutables)
@@ -59,6 +59,8 @@ largo = dimensiones_pantalla[0]
 ancho = dimensiones_pantalla[1]
 
 screen = [pix_bn for _ in range(1, 201)]
+
+
 
 
 # Fija las figuras a la pantalla
@@ -343,7 +345,7 @@ def limites_vertical(coordenadas:list):
 
 
 # Calcula las coordenadas despues de cada movimiento 
-def calculo_movimiento(coordenadas:list, movimiento:int):
+def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
     "Incluye el movimiento ordenado y el automatico"
 
     # Comprobacion de los limites horizontales
@@ -352,19 +354,23 @@ def calculo_movimiento(coordenadas:list, movimiento:int):
 
     # Indices para calculo del movimiento vertical y horizontal.
     n = movimiento # o -1. Es la direccion del movimiento
+    print(n)
     match movimiento:
-        case 1:
+        case recursos.Movimiento.DERECHA:
             # movimiento horizontal derecha
             coordenadas_nuevas = [x + n for x in coordenadas]
-        case -1:
+        case recursos.Movimiento.IZQUIERDA:
             # movimiento horizontal izquierda
             coordenadas_nuevas = [x + n for x in coordenadas]
-        case 0:
+        case recursos.Movimiento.ABAJO:
             # movimiento vertical
             coordenadas_nuevas = [x + ancho for x in coordenadas]
-        case 5:
-            print("\nADIOS")
-            exit()
+        case recursos.Movimiento.GIRO:
+            # giro de la figura
+            coordenadas_nuevas = figura_prueba(figura, coordenadas)
+        #case recursos.Movimiento.SALIDA:
+        #    print("\nADIOS")
+        #    exit()
 
     # Control de colision
     #if colision(coordenadas_nuevas,screen):
@@ -386,6 +392,7 @@ if __name__ == "__main__":
     # figura
 
 # Secuencia
+    
     comienzo = True
     lista_colision = []
     while True:
@@ -398,7 +405,7 @@ if __name__ == "__main__":
             print(coordenadas)
         pantalla_prueba(coordenadas,screen)
         print(coordenadas)
-        ord = ordenes()
+        ord = recursos.ordenes()
         print(coordenadas)
         coordenadas = calculo_movimiento(coordenadas, ord)
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
@@ -409,9 +416,17 @@ if __name__ == "__main__":
         print(coordenadas)
         pantalla_prueba(coordenadas, screen)
         print(coordenadas)
-
-
-
+    
+"""
+figura = salida(recursos.figuras)
+print(figura)
+coordenadas = figura_prueba(figura)
+print(coordenadas)
+pantalla_prueba(coordenadas, screen)
+coordenadas = figura_prueba(figura, coordenadas)
+print(coordenadas)
+pantalla_prueba(coordenadas, screen)
+"""
 
 
 # Coordenadas en rotacion de las figuras
