@@ -43,9 +43,12 @@ from getpass import getpass
 from random import randint
 
 import recursos
+#import mov_auto
+
 import time
 import threading
 import enum
+import os
 
 #from pruebas import ordenes
 
@@ -90,6 +93,9 @@ def pantalla_pix(coordenadas:list, screen:tuple)->tuple:
 
 def pantalla_prueba(coordenadas:list, screen:tuple):
     'Dibuja la figura en la pantalla'
+
+    # Borramos la pantalla
+    os.system("cls")
 
     # Creamos la pantalla en blanco-scream y asi nos evitamos pasarla por parametro. Usamos el guion bajo.
     screen = list(screen)
@@ -343,6 +349,35 @@ def limites_vertical(coordenadas:list):
         
     return False
 
+#=======================================#
+
+# Hilo movimiento automatico
+
+# el codigo del movimiento automatico. Los parametros no son necesarios, pero de momento los mantengo para facilitar el trasiego de datos.
+def cod_mov_auto(coordenadas:list, ancho:int):
+    
+    coordenadas_nuevas = [x + ancho for x in coordenadas]
+
+    return coordenadas_nuevas
+
+
+def mov_auto():
+
+    t = 1
+    count = 1
+
+    global coordenadas
+    
+    while True:
+        time.sleep(2)
+        coordenadas = cod_mov_auto(coordenadas, ancho)
+        
+        # seguro
+        #count += 1
+        #if count > 5:
+        #    break
+
+#=======================================#
 
 # Calcula las coordenadas despues de cada movimiento 
 def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
@@ -354,7 +389,6 @@ def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
 
     # Indices para calculo del movimiento vertical y horizontal.
     n = movimiento # o -1. Es la direccion del movimiento
-    print(n)
     match movimiento:
         case recursos.Movimiento.DERECHA:
             # movimiento horizontal derecha
@@ -380,9 +414,19 @@ def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
     return coordenadas_nuevas
 
 
+
 def logica():
     "coordina todo, enviando los parametros al resto de funciones"
     pass
+
+
+
+
+
+
+
+#================================================================================#
+
 
 
 if __name__ == "__main__":
@@ -391,31 +435,61 @@ if __name__ == "__main__":
     # coordenadas
     # figura
 
-# Secuencia
+# Secuencia principal: voy a tratar de aislar los procesos de movimiento automatico y moviento con teclas en su minima expresion en sus 
+#                      respectivos hilos, dejando la secuencia principal del bucle en main.py.
+#                      Lo suyo seria arrancar los hilos desde el bucle principal. 
     
+    hilos = True
     comienzo = True
     lista_colision = []
+    count = 1
+
     while True:
+
+        # Bloque de inicio/reinicio
         if comienzo:
-            print("Yes")
+            #print("Yes")
             figura = salida(recursos.figuras)
             comienzo = False
-            fijacion = False
+            #fijacion = False
             coordenadas = figura_prueba(figura)
-            print(coordenadas)
+            #print(coordenadas)
+
+        # Bloque de pantalla: Quizas lo suyo seria que se refrescara solo haya cambios en coordenadas, en vez de un sleep().
+
+        time.sleep(1)
         pantalla_prueba(coordenadas,screen)
-        print(coordenadas)
-        ord = recursos.ordenes()
-        print(coordenadas)
-        coordenadas = calculo_movimiento(coordenadas, ord)
+        
+        # Este es el bloque de ordenes en turno por turno:
+        #print(coordenadas)
+        #ord = recursos.ordenes()
+        #print(coordenadas)
+        #coordenadas = calculo_movimiento(coordenadas, ord)
+        #==========================================#
+        
+        # Bloque de hilos. Solo una vez
+        if hilos:
+            hilo_auto = threading.Thread(target=mov_auto)
+            hilo_teclado = threading.Thread()
+            hilo_auto.start()
+            hilos = False
+
+        # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
             screen = pantalla_pix(coordenadas, screen)
             lista_colision = indices_colision(coordenadas, screen, lista_colision)
             #colision(coordenadas, lista_colision)
             comienzo = True
-        print(coordenadas)
-        pantalla_prueba(coordenadas, screen)
-        print(coordenadas)
+        
+        # seguro
+        #count += 1
+        #if count > 5:
+        #    break
+
+        # Bloque complementario en turno por turno
+        #print(coordenadas)
+        #pantalla_prueba(coordenadas, screen)
+        #print(coordenadas)
     
 """
 figura = salida(recursos.figuras)

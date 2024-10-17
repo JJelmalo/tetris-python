@@ -114,3 +114,33 @@ if __name__ == "__main__":
     pass
 
 
+
+
+
+# Borrar pantalla terminal:
+
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+
+import os
+import platform
+
+if platform.system() == "Windows":
+    os.system("cls")
+    print("windows")
+else:
+    print("Otros")
+    os.system("clear")
+    print("Otros")
