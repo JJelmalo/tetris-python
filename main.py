@@ -42,7 +42,7 @@
 from getpass import getpass
 from random import randint
 
-import recursos
+import recursos, mov_teclado
 #import mov_auto
 
 import time
@@ -457,7 +457,7 @@ if __name__ == "__main__":
 
         # Bloque de pantalla: Quizas lo suyo seria que se refrescara solo haya cambios en coordenadas, en vez de un sleep().
 
-        time.sleep(1)
+        time.sleep(0.5)
         pantalla_prueba(coordenadas,screen)
         
         # Este es el bloque de ordenes en turno por turno:
@@ -469,10 +469,16 @@ if __name__ == "__main__":
         
         # Bloque de hilos. Solo una vez
         if hilos:
-            hilo_auto = threading.Thread(target=mov_auto)
+        #    hilo_auto = threading.Thread(target=mov_auto)
             hilo_teclado = threading.Thread()
-            hilo_auto.start()
+        #    hilo_auto.start()
             hilos = False
+
+        #===========================================#
+
+        # Bloque moviento por teclado
+        ord = mov_teclado.teclado()
+        coordenadas = calculo_movimiento(coordenadas, ord)
 
         # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
