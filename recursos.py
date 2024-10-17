@@ -91,7 +91,7 @@ class Movimiento(IntEnum):
     DERECHA = 1
     ABAJO = 0
     GIRO = 5
-    #SALIDA = 6
+    SALIDA = 6
 
 
 # funcion temporal para comprobar el movimiento en main.py.

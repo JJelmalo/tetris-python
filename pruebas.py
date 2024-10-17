@@ -21,6 +21,8 @@ import threading
 from random import randint
 import time
 
+import main
+
 
 # Esta funcion va a ser el hilo, controlada por la variable externa "controlador"
 def funcion():
@@ -104,6 +106,100 @@ Presione cualquier otra tecka para salir del juego.
 
 
 
+#==========================================#
+
+
+
+# Borrar pantalla terminal:
+import os
+import platform
+
+def borrado():
+
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+    print("iooooooooooooooooooooooooooooooooohaodhoa\n")
+
+    if platform.system() == "Windows":
+        os.system("cls")
+        print("windows")
+    else:
+        print("Otros")
+        os.system("clear")
+        print("Otros")
+
+
+#========================================
+
+# Borrado de las lineas completas
+#   Contabilizar. Puntuacion - llevar la cuenta - comunicarlo - eliminarlas - representar visualmente la eliminacion.
+#   Tiene que verse como se hace
+#   un condicional de filas, en en caso positivo un bucle que vaya contabilizando filas y eliminadolas.
+
+# Esta funcion aisla la ultima fila y la valora. Devuelve un True/False
+def filas(screen:tuple)->tuple:
+
+    screen = list(screen)
+
+    b = []
+    for ind,char in enumerate(screen):
+        if ind in list(range(191, 201)):
+            b.append(char)
+    print(b)    
+    
+    c = map(lambda x: True if x == main.pix_ng else False, b)
+
+    if all(c):
+        # Habria que llamar a otra funcion que lleve el marcador
+        # A otra que elimine las lineas completas y rehaga ecreen. Cada linea eliminada una a una para que se vea.
+        print(c)
+        
+#========================================
+
+# Bugfix para las coordenadas que se pasan al darle repetidamente a la tecla abajo
+def prueba():
+        
+    coordenadas_nuevas = [175, 185, 195, 205]
+
+    a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
+    if list(a):
+        coordenadas_nuevas = map(lambda x: x-10, coordenadas_nuevas)
+        print("CONTROL")
+        return list(coordenadas_nuevas)
+
+    else:
+        return coordenadas_nuevas
+
+#========================================
+
+# Hay que elaborar un control para los movimientos auto y voluntario para que no se superpongan en las piezas estacionadas, ya que si 
+# se pulsa repetidamente las teclas parece que sobre pasan el control diseñado para el movimiento por turnos.
+
+# Es un control pasivo que fijaba la pieza despues de evaluar un movimiento por turnos, basandase en la posicion de la figuara en juego 
+# y de la pieza colocada. Si la primera estaba en los margenes de la segunda, ésta tambien pasaba a estar colocada, filtrada por un condicional 
+
+
+# Me puedo basar en el control pasivo existente en la funcion colision y en los que he diseñado para reconducir el exceso en los valores 
+# de las coordenadas en la funcion claculo_movimiento_hilo.
+
+
+
+
+#===============================================================================================================================================#
+
+
+
 
 if __name__ == "__main__":
 
@@ -112,35 +208,5 @@ if __name__ == "__main__":
     #print("BOOMMMMM!!!!!!!!!!!!!!!")
     #controlador = control(controlador)
     pass
-
-
-
-
-
-# Borrar pantalla terminal:
-
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-print("iooooooooooooooooooooooooooooooooohaodhoa\n")
-
-import os
-import platform
-
-if platform.system() == "Windows":
-    os.system("cls")
-    print("windows")
-else:
-    print("Otros")
-    os.system("clear")
-    print("Otros")
+    filas(main.screen)
+    #print(prueba())

@@ -54,6 +54,7 @@ import keyboard
 #from pruebas import ordenes
 
 
+
 # variables externas (inmutables)
 pix_bn = "🔲"
 pix_ng = "🔳"
@@ -65,9 +66,13 @@ ancho = dimensiones_pantalla[1]
 screen = [pix_bn for _ in range(1, 201)]
 
 
+#=======================================#
 
 
-# Fija las figuras a la pantalla
+# BLOQUE PARA LA REPRESENTACION
+
+
+# Fija las figuras terminadas a la pantalla
 def pantalla_pix(coordenadas:list, screen:tuple)->tuple:
     
     screen = list(screen)
@@ -114,8 +119,13 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
 
     # Creando la imagen en la pantalla (lista)
     for elemento in coordenadas:
-        screen.pop(elemento-1)
-        screen.insert(elemento-1, pix_ng)
+        try:
+            screen.pop(elemento-1)
+            screen.insert(elemento-1, pix_ng)
+        except IndexError as exc:
+            print(f"Elemento: {elemento}, len screen: {len(screen)}")
+            print("Las coordenadas:", coordenadas)
+            print(exc)
     #print(screen)
     count = 1
     for caracter in screen:
@@ -127,6 +137,11 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
         count += 1
     print(imagen)
 
+
+#=======================================#
+
+
+# BLOQUE PARA LA GESTION DE LAS FIGURAS
 
 
 # Funcion para la seleccion de nuevas piezas
@@ -280,6 +295,12 @@ def figura_prueba(figura:dict, coordenadas=[]):
         return list(coordenadas)
 
 
+#=======================================#
+
+
+# BLOQUE DE COLISION Y LIMITES
+
+
 def limites_figura_horizontal(coordenadas:list, movimiento:int)->bool:
     
     limite_h_de = [x for x in range(1, ancho*largo+1) if x%10 == 0]  # ¿filter?
@@ -298,7 +319,7 @@ def limites_figura_horizontal(coordenadas:list, movimiento:int)->bool:
         
     
 # Funcion para obtener las coordenadas de las piezas colocadas.
-def indices_colision(coordenadas:list, screen:tuple, indices:list):
+def indices_colision(coordenadas:list, screen:tuple, indices:list) -> bool:
 
     """
     if pix_ng not in screen:
@@ -318,7 +339,8 @@ def indices_colision(coordenadas:list, screen:tuple, indices:list):
     return lista_colision
         
 
-def colision(coordenadas:list, lista_colision:list):
+# Comprueba si las coordenadas de la figura estan pegadas (a 10 indices/pixeles) de las figuras estacionadas
+def colision(coordenadas:list, lista_colision:list)->bool:
 
     rango_colision = list(map(lambda x: x-10, lista_colision))
     #rango_colision = list(rango_colision)
@@ -335,9 +357,7 @@ def colision(coordenadas:list, lista_colision:list):
         return False
 
 
-
-
-def limites_vertical(coordenadas:list):
+def limites_vertical(coordenadas:list)->bool:
 
     limite_v = [x for x in range(191,201)]
     #print(coordenadas)
@@ -361,6 +381,14 @@ def cod_mov_auto(coordenadas:list, ancho:int):
     
     coordenadas_nuevas = [x + ancho for x in coordenadas]
 
+    # Hay que poner AQUI, un control a las coordenadas en su limite vertical. Si se pulsa repetidamente "abajo", se pueden llegar a enviar 
+    # coordenadas que superen el len de screen.
+    a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
+    if list(a):
+        coordenadas_nuevas = map(lambda x: x-10, coordenadas_nuevas)
+        print("CONTROL")
+        return list(coordenadas_nuevas)
+    
     return coordenadas_nuevas
 
 
@@ -431,6 +459,9 @@ def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
 def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
     "Incluye el movimiento ordenado y el automatico"
 
+    # Variable de control para salir
+    global control
+
     # Comprobacion de los limites horizontales
     if limites_figura_horizontal(coordenadas, movimiento):
         return coordenadas
@@ -450,13 +481,18 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
         case recursos.Movimiento.GIRO:
             # giro de la figura
             coordenadas_nuevas = figura_prueba(figura, coordenadas)
-        #case recursos.Movimiento.SALIDA:
-        #    print("\nADIOS")
-        #    exit()
+        case recursos.Movimiento.SALIDA:
+            print("\nADIOS")
+            control = True
+            exit()
 
-    # Control de colision
-    #if colision(coordenadas_nuevas,screen):
-        #return coordenadas, True
+    # Hay que poner AQUI, un control a las coordenas en su limite vertical. Si se pulsa repetidamente "abajo", se pueden llegar a enviar 
+    # coordenadas que superen el len de screen.
+    a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
+    if list(a):
+        coordenadas_nuevas = map(lambda x: x-10, coordenadas_nuevas)
+        print("CONTROL")
+        return list(coordenadas_nuevas)
 
     # Retorna las coordenadas de la figura una vez aplicado el movimiento
     return coordenadas_nuevas
@@ -478,9 +514,8 @@ def teclado():
                 coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.ABAJO)
             elif evento.name == "p":
                 coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.GIRO)
-            else:
-                print("Adios.")
-                exit()
+            elif evento.name == "esc":
+                coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.SALIDA)
 
 
 #=======================================#
@@ -514,6 +549,27 @@ if __name__ == "__main__":
     comienzo = True
     lista_colision = []
     count = 1
+    control = False
+
+    # Cabecera
+    os.system("cls")
+    print("\n"*3)
+    print("\t"*8 + "#"*20)
+    print("\t"*8 + "##" + " "*16 + "##")
+    print("\t"*8 + "##" + " "*5 + "TETRIS" + " "*5 + "##")
+    print("\t"*8 + "##" + " "*16 + "##")
+    print("\t"*8 + "#"*20)
+    print("\n"*5)
+
+    print("Pulse la tecla 'INTRO' para continuar")
+    print("Para abandonar el juego pulse la tecla 'ESC' en cualquier momento")
+    print("\n"*3)
+    while True:
+        empezar = keyboard.read_event()
+        if empezar.name == 'enter':
+            break
+
+
 
     while True:
 
@@ -540,9 +596,9 @@ if __name__ == "__main__":
         
         # Bloque de hilos. Solo una vez
         if hilos:
-        #    hilo_auto = threading.Thread(target=mov_auto)
+            hilo_auto = threading.Thread(target=mov_auto)
             hilo_teclado = threading.Thread(target=teclado)
-        #    hilo_auto.start()
+            hilo_auto.start()
             hilo_teclado.start()
             hilos = False
 
@@ -556,9 +612,20 @@ if __name__ == "__main__":
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
             screen = pantalla_pix(coordenadas, screen)
             lista_colision = indices_colision(coordenadas, screen, lista_colision)
-            #colision(coordenadas, lista_colision)
             comienzo = True
+            # Aqui iria el condicional para controlar la filas resueltas
+
+
+            
+            #colision(coordenadas, lista_colision)
+            
         
+        # Control
+        if control:
+            print("\n\n\n\t\t\t\t\t\t############# GRACIAS POR JUGAR ##############")
+            break
+
+
         # seguro
         #count += 1
         #if count > 5:
