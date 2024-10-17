@@ -49,6 +49,7 @@ import time
 import threading
 import enum
 import os
+import keyboard
 
 #from pruebas import ordenes
 
@@ -349,9 +350,11 @@ def limites_vertical(coordenadas:list):
         
     return False
 
+
 #=======================================#
 
-# Hilo movimiento automatico
+
+# HILO PARA EL MOVIMIENTO AUTOMATICO
 
 # el codigo del movimiento automatico. Los parametros no son necesarios, pero de momento los mantengo para facilitar el trasiego de datos.
 def cod_mov_auto(coordenadas:list, ancho:int):
@@ -377,9 +380,18 @@ def mov_auto():
         #if count > 5:
         #    break
 
+
 #=======================================#
 
-# Calcula las coordenadas despues de cada movimiento 
+
+# MOVIMIENTO VOLUNTARIO
+# Incluye el calculo de los limites laterales (horizontales)
+
+
+# Funcion para el calculo por turno. Estaria complementado por la funcion teclado del modulo mov_teclado.py que daria contenido 
+# a las ordenes (ord).
+# Calcula las coordenadas despues de cada movimiento
+"""
 def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
     "Incluye el movimiento ordenado y el automatico"
 
@@ -412,7 +424,66 @@ def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
 
     # Retorna las coordenadas de la figura una vez aplicado el movimiento
     return coordenadas_nuevas
+"""
 
+
+# Bloque adaptada al procesamiento mediante hilos
+def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
+    "Incluye el movimiento ordenado y el automatico"
+
+    # Comprobacion de los limites horizontales
+    if limites_figura_horizontal(coordenadas, movimiento):
+        return coordenadas
+
+    # Indices para calculo del movimiento vertical y horizontal.
+    n = movimiento # o -1. Es la direccion del movimiento
+    match movimiento:
+        case recursos.Movimiento.DERECHA:
+            # movimiento horizontal derecha
+            coordenadas_nuevas = [x + n for x in coordenadas]
+        case recursos.Movimiento.IZQUIERDA:
+            # movimiento horizontal izquierda
+            coordenadas_nuevas = [x + n for x in coordenadas]
+        case recursos.Movimiento.ABAJO:
+            # movimiento vertical
+            coordenadas_nuevas = [x + ancho for x in coordenadas]
+        case recursos.Movimiento.GIRO:
+            # giro de la figura
+            coordenadas_nuevas = figura_prueba(figura, coordenadas)
+        #case recursos.Movimiento.SALIDA:
+        #    print("\nADIOS")
+        #    exit()
+
+    # Control de colision
+    #if colision(coordenadas_nuevas,screen):
+        #return coordenadas, True
+
+    # Retorna las coordenadas de la figura una vez aplicado el movimiento
+    return coordenadas_nuevas
+
+
+# Funcion gestion llamada del teclado
+def teclado():
+
+    global coordenadas
+
+    while True:
+        evento = keyboard.read_event()
+        if evento.event_type == keyboard.KEY_DOWN:
+            if evento.name == "a":
+                coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.IZQUIERDA) 
+            elif evento.name == "d":
+                coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.DERECHA)
+            elif evento.name == "s":
+                coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.ABAJO)
+            elif evento.name == "p":
+                coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.GIRO)
+            else:
+                print("Adios.")
+                exit()
+
+
+#=======================================#
 
 
 def logica():
@@ -470,15 +541,16 @@ if __name__ == "__main__":
         # Bloque de hilos. Solo una vez
         if hilos:
         #    hilo_auto = threading.Thread(target=mov_auto)
-            hilo_teclado = threading.Thread()
+            hilo_teclado = threading.Thread(target=teclado)
         #    hilo_auto.start()
+            hilo_teclado.start()
             hilos = False
 
         #===========================================#
 
-        # Bloque moviento por teclado
-        ord = mov_teclado.teclado()
-        coordenadas = calculo_movimiento(coordenadas, ord)
+        # Bloque moviento por teclado por turnos
+        #ord = mov_teclado.teclado()
+        #coordenadas = calculo_movimiento(coordenadas, ord)
 
         # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
