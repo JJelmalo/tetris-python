@@ -42,7 +42,7 @@
 from getpass import getpass
 from random import randint
 
-import recursos, mov_teclado
+import recursos, mov_teclado, pruebas
 #import mov_auto
 
 import time
@@ -64,6 +64,9 @@ largo = dimensiones_pantalla[0]
 ancho = dimensiones_pantalla[1]
 
 screen = [pix_bn for _ in range(1, 201)]
+seccion = [pix_bn for _ in list(range(10))]
+
+evento_1 = threading.Event()
 
 
 #=======================================#
@@ -78,6 +81,8 @@ def pantalla_pix(coordenadas:list, screen:tuple)->tuple:
     screen = list(screen)
 
     imagen = ""
+
+    #print("Coordendas de patalla_pix: ", coordenadas)
 
     # Creando la imagen en la pantalla (lista)
     for elemento in coordenadas:
@@ -319,7 +324,7 @@ def limites_figura_horizontal(coordenadas:list, movimiento:int)->bool:
         
     
 # Funcion para obtener las coordenadas de las piezas colocadas.
-def indices_colision(coordenadas:list, screen:tuple, indices:list) -> bool:
+def indices_colision(coordenadas:list, screen:tuple, indices:list) -> list:
 
     """
     if pix_ng not in screen:
@@ -355,8 +360,27 @@ def colision(coordenadas:list, lista_colision:list)->bool:
     
     else:
         return False
+    
+
+# Funcion para evitar que la figura en juego se monte sobre las piezas ya colocadas. Compara las coordenadas de la piezs en juego con las 
+# estacionadas (lista de colision)
+def control_invasion(coordenadas:list, indices:list) -> list:
+
+    invasion = list(filter(lambda x: True if x in indices else False, coordenadas))
+
+    while any(invasion):
+        coordenadas = list(map(lambda x: x - 10, coordenadas))
+        invasion = list(filter(lambda x: True if x in indices else False, coordenadas))
+        if any(invasion):
+            continue
+        else:
+            return coordenadas
+        
+    return coordenadas
 
 
+# Funcion para comprobar si la figura en juego ha llegado al limite del tablero. Compara las coordenadas con una lista de indices del limite 
+# del tablero (limite_v)
 def limites_vertical(coordenadas:list)->bool:
 
     limite_v = [x for x in range(191,201)]
@@ -393,6 +417,10 @@ def cod_mov_auto(coordenadas:list, ancho:int):
 
 
 def mov_auto():
+
+    # Control:
+    while not cerrojo:
+        evento_1.wait()
 
     t = 1
     count = 1
@@ -501,6 +529,10 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
 # Funcion gestion llamada del teclado
 def teclado():
 
+    # Control:
+    while not cerrojo:
+        evento_1.wait()
+
     global coordenadas
 
     while True:
@@ -548,8 +580,10 @@ if __name__ == "__main__":
     hilos = True
     comienzo = True
     lista_colision = []
-    count = 1
+    count = 0
     control = False
+    cerrojo = True
+
 
     # Cabecera
     os.system("cls")
@@ -583,7 +617,6 @@ if __name__ == "__main__":
             #print(coordenadas)
 
         # Bloque de pantalla: Quizas lo suyo seria que se refrescara solo haya cambios en coordenadas, en vez de un sleep().
-
         time.sleep(0.5)
         pantalla_prueba(coordenadas,screen)
         
@@ -595,6 +628,7 @@ if __name__ == "__main__":
         #==========================================#
         
         # Bloque de hilos. Solo una vez
+        cerrojo = True
         if hilos:
             hilo_auto = threading.Thread(target=mov_auto)
             hilo_teclado = threading.Thread(target=teclado)
@@ -610,16 +644,21 @@ if __name__ == "__main__":
 
         # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
+            cerrojo = False                                                             # Variable de control de los eventos para los hilos
+            coordenadas = control_invasion(coordenadas, lista_colision)
             screen = pantalla_pix(coordenadas, screen)
             lista_colision = indices_colision(coordenadas, screen, lista_colision)
             comienzo = True
             # Aqui iria el condicional para controlar la filas resueltas
+            while pruebas.filas(screen):
+                screen = pruebas.come_filas(screen)
+                pantalla_prueba(coordenadas, screen)
+                time.sleep(1.5)
+                count += 1
+            if count:
+                pass
+                count = 0
 
-
-            
-            #colision(coordenadas, lista_colision)
-            
-        
         # Control
         if control:
             print("\n\n\n\t\t\t\t\t\t############# GRACIAS POR JUGAR ##############")

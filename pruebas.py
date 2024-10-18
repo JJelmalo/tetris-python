@@ -15,6 +15,57 @@
                                                                 
 """
 
+# RECURSOS TEMPORALES
+
+# Pantalla
+pix_bn = "🔲"
+pix_ng = "🔳"
+
+screen_1 = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔳", "🔲", "🔲", "🔳", "🔲", "🔲", "🔳", "🔳")
+
+screen_2 = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔳", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔲", "🔳", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳")
+
+
+
+
 
 
 import threading
@@ -147,23 +198,59 @@ def borrado():
 #   Tiene que verse como se hace
 #   un condicional de filas, en en caso positivo un bucle que vaya contabilizando filas y eliminadolas.
 
-# Esta funcion aisla la ultima fila y la valora. Devuelve un True/False
-def filas(screen:tuple)->tuple:
 
-    screen = list(screen)
+# Esta funcion aisla la ultima fila y la valora. Devuelve un True/False (seria lo ideal), regulado por un bucle que contenga el codigo
+# para ir 'comiendose' las filas y puntuandloas. Pero esto quizas cree problemas con los hilos y la gestion de la variable "coordenadas".
+# Por lo que voy a intentar hacerlo todo o casi todo en la misma funcion.
+def filas(screen:tuple)->bool:
 
+    """
     b = []
     for ind,char in enumerate(screen):
         if ind in list(range(191, 201)):
             b.append(char)
     print(b)    
-    
-    c = map(lambda x: True if x == main.pix_ng else False, b)
+    """
+
+    a = screen[190:199]
+    c = map(lambda x: True if x == main.pix_ng else False, a)
 
     if all(c):
+        return True
+    else:
+        return False
+    
+
+    # Quizas habria que parar ambos movimientos, quizas con una variable de control (True/False). Gestionada por filas().
+
+    # Codigo para gestionar las filas completas
         # Habria que llamar a otra funcion que lleve el marcador
         # A otra que elimine las lineas completas y rehaga ecreen. Cada linea eliminada una a una para que se vea.
-        print(c)
+    while all(c):
+        # Llamar a funcion marcador. Implemantar lo ultimo
+        # Llamar a funcion que elimine las filas
+        break
+
+
+def come_filas(screen:tuple)->list:
+    
+    screen = list(screen)
+
+    seccion = [pix_bn for _ in list(range(10))]
+    #print(len(screen))
+
+    for _ in list(range(10)):
+        screen.pop()
+
+    #print(len(screen))
+    #print(screen)
+
+    seccion.extend(screen)
+    #print(len(seccion))
+    #print(seccion)
+
+    return tuple(seccion)
+
         
 #========================================
 
@@ -193,6 +280,21 @@ def prueba():
 # Me puedo basar en el control pasivo existente en la funcion colision y en los que he diseñado para reconducir el exceso en los valores 
 # de las coordenadas en la funcion claculo_movimiento_hilo.
 
+# Introducido por un condicional referenciado a la funcion colision.
+def control_invasion(coordenadas:list, indices:list) -> list:
+
+    invasion = list(filter(lambda x: True if x in indices else False, coordenadas))
+
+    while any(invasion):
+        coordenadas = list(map(lambda x: x - 10, coordenadas))
+        invasion = list(filter(lambda x: True if x in indices else False, coordenadas))
+        if any(invasion):
+            continue
+        else:
+            return coordenadas
+        
+    return coordenadas
+
 
 
 
@@ -208,5 +310,8 @@ if __name__ == "__main__":
     #print("BOOMMMMM!!!!!!!!!!!!!!!")
     #controlador = control(controlador)
     pass
-    filas(main.screen)
     #print(prueba())
+    print("\n"*2)
+    #print(control_invasion([95, 105, 115, 125], [165, 175, 185, 195]))
+    #print(filas(main.screen))
+    print(type(come_filas(screen_2)))
