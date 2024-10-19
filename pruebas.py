@@ -296,9 +296,156 @@ def control_invasion(coordenadas:list, indices:list) -> list:
     return coordenadas
 
 
+#===============================================#
+
+# Bugfix giro de figuras
+"""
+Reporte de una linea cayendo tumbada:
+    Rango de colision [176, 184, 185, 186]
+    Coordenadas [24, 25, 26, 27]
+    []
+    Coordenadas en calculo de movimiento:  [24, 25, 26, 27]
+    Giro: [23, 15, 7, -1]
+"""
+"""
+Reporte de una linea cayendo recta (mas informacion) en su primer giro:
+    Rango de colision [165, 175, 185, 186, 155, 156, 166, 176, 161, 171, 181, 182]
+    Coordenadas [15, 25, 35, 45]
+    []
+    Coordenadas en calculo de movimiento:  [15, 25, 35, 45]
+    Coordenadas en la funcion figura_prueba:  [15, 25, 35, 45]
+    Coordenadas figura_prueba/recta posicion 0:  [14, 15, 16, 17]
+    Giro: [14, 15, 16, 17]
+    Coordenadas en calculo de movimiento:  [14, 15, 16, 17]
+    Coordenadas en la funcion figura_prueba:  [14, 15, 16, 17]
+    Coordenadas figura_prueba/recta posicion 0:  [13, 5, -3, -11]
+    Giro: [13, 5, -3, -11]
+    Coordenadas en calculo de movimiento:  [13, 5, -3, -11]
+    Coordenadas en la funcion figura_prueba:  [13, 5, -3, -11]
+    Coordenadas figura_prueba/recta posicion 0:  [12, -5, -22, -39]
+    Giro: [12, -5, -22, -39]
+"""
+
+# Notas al segundo reporte:
+
+#   - El error se produce dentro de la funcion, las coordenadas recibidas son correctas. El error esta en el propio calculo de la nuevas coord.
+#   - Hay un primer giro correcto, con coordenadas entrantes (recta) [15, 25, 35, 45], y salientes [14, 15, 16, 17] (tumbada). Este giro no 
+#   a ser representado, porque la presion del teclado ha sido demasiado rapida.
+
+#   Nota: quizas habria que plantearse el cambio en la secuencia de representacion a cada cambio en las coordernas (¿llamada a funcion 
+#   pantalla_prueba?). ¿Con alguno tipo de lock en el acceso a usodicha funcion?. Previo backup de toda el bucle de la secuencia, incluso quizas
+#   del propio archivo main.py (o confio en el respaldo de git?)
+
+#      coordenadas de pie[0] [15, 25, 35, 45]                                 --- de pie. Transicion correcta: [-1, -10, -21, -32]
+#      coordenadas entrantes: [14, 15, 16, 17]                             --- tumbada
+#      coordenadas despues de aplicar la formula giro[1]: [13, 5, -3, -11]    --- de tumbada a de pie
+#      indices aplicados entre ambas coordenadas: [-1, -10, -13, -6]  
+
+
+#===============================================#
+
+# Funcion correctora en los giros pegados al limites horizontal izquierdo.
+# Hay una malfuncion en algunos giros. Habra que cribar por giros.
+def funcion_correctora(figura:dict, coordenadas_temporales:list)->list:
+
+    # Datos
+    print()
+    print(figura)
+    print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"])
+
+    if figura["nombre"] == "L":
+        if figura['posicion'] == 1  or figura['posicion'] == 3:
+            coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
+            coordenadas_nuevas = list(coordenadas_nuevas)
+            print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+            return coordenadas_nuevas
+        
+    elif figura["nombre"] == "recta":
+        if figura['posicion'] == 1:
+            coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
+            return list(coordenadas_nuevas)
+        
+    return coordenadas_temporales
+
+
+
+#===============================================#
+
+# Otra excepcion
+
+
+
+
+# Rango de colision []
+# Coordenadas [21, 22, 23, 24]
+# []
+# VUELTA:  47
+# Coordenadas en calculo de movimiento:  [21, 22, 23, 24]
+# Limite_figura_horizontal: [21, 22, 23, 24], 5, False
+# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
+# Limite_figura_horizontal: [21, 22, 23, 24], 5, True
+# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
+# Confirmado giro pegado al limite izquierdo
+# Coordenadas en la funcion figura_prueba:  [21, 22, 23, 24]
+# Coordenadas figura_prueba/recta posicion 1 a posicion 0:  [22, 32, 42, 52]
+# Giro sin corregir: [22, 32, 42, 52] figura posicion: 0
+
+# {'nombre': 'recta', '1': [['🔳'], ['🔳'], ['🔳'], ['🔳']], '2': ['🔳', '🔳', '🔳', '🔳'], '1ini': (5, 15, 25, 35), '2ini': (4, 5, 6, 7), 'coef_giro': 10, 'eje_giro': 0, 'posicion': 0, 'posiciones': 2, 'coordenadas': [<class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>]}
+# Nombre: recta  /  Posicion: 0
+# Giro sin corregir: [22, 32, 42, 52]   ....   Giro corregido: None
+# Exception in thread Thread-4 (teclado):
+# Traceback (most recent call last):
+#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
+#     self.run()
+#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1012, in run
+#     self._target(*self._args, **self._kwargs)
+#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 576, in teclado
+#     coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.GIRO)
+#                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 547, in calculo_movimiento_hilo
+#     a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
+#         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# TypeError: 'NoneType' object is not iterable
+
+
+# Rango de colision []
+# Coordenadas [1, 2, 3, 11]
+# []
+# VUELTA:  13
+# Coordenadas en calculo de movimiento:  [1, 2, 3, 11]
+# Limite_figura_horizontal: [1, 2, 3, 11], 5, False
+# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
+# Limite_figura_horizontal: [1, 2, 3, 11], 5, True
+# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
+# Confirmado giro pegado al limite izquierdo
+# Coordenadas en la funcion figura_prueba:  [1, 2, 3, 11]
+# 1
+# Giro sin corregir: [2, 3, 13, 23] figura posicion: 2
+
+# {'nombre': 'L', '1': [['🔳'], ['🔳'], ['🔳', '🔳']], '2': [['🔳', '🔳', '🔳'], ['🔳']], '3': [['🔳', '🔳'], ['🔳'], ['🔳']], '4': [['🔳'], ['🔳', '🔳', '🔳']], '1ini': (5, 15, 25, 26), '2ini': (4, 5, 6, 14), '3ini': (5, 6, 16, 26), '4ini': (6, 14, 15, 16), 'coef_giro': 10, 'eje_giro': 2, 'posicion': 2, 'posiciones': 4, 'coordenadas': [<class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>]}
+# Nombre: L  /  Posicion: 2
+# Giro sin corregir: [2, 3, 13, 23]   ....   Giro corregido: None
+# Exception in thread Thread-4 (teclado):
+# Traceback (most recent call last):
+#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
+#     self.run()
+#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1012, in run
+#     self._target(*self._args, **self._kwargs)
+#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 576, in teclado
+#     coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.GIRO)
+#                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 547, in calculo_movimiento_hilo
+#     a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
+#         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# TypeError: 'NoneType' object is not iterable
+
+
 
 
 #===============================================================================================================================================#
+
+
+
 
 
 
@@ -315,3 +462,6 @@ if __name__ == "__main__":
     #print(control_invasion([95, 105, 115, 125], [165, 175, 185, 195]))
     #print(filas(main.screen))
     print(type(come_filas(screen_2)))
+
+
+

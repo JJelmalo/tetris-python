@@ -82,7 +82,7 @@ def pantalla_pix(coordenadas:list, screen:tuple)->tuple:
 
     imagen = ""
 
-    #print("Coordendas de patalla_pix: ", coordenadas)
+    print("Coordendas de patalla_pix: ", coordenadas)
 
     # Creando la imagen en la pantalla (lista)
     for elemento in coordenadas:
@@ -106,7 +106,7 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     'Dibuja la figura en la pantalla'
 
     # Borramos la pantalla
-    os.system("cls")
+    #os.system("cls")
 
     # Creamos la pantalla en blanco-scream y asi nos evitamos pasarla por parametro. Usamos el guion bajo.
     screen = list(screen)
@@ -186,6 +186,7 @@ def figura_prueba(figura:dict, coordenadas=[]):
     # Giran un coeficiente que se suma a los elmentos. Gira sobre un eje que es un elmeneto que no cambia su coordenada. Y giran en una 
     # direccion, que esta definida en + ó - segun el punto en el eje de ordenadas (mitad de las posiciones +, mitad negativo).
     figura = figura
+    print("Coordenadas en la funcion figura_prueba: ", coordenadas)
     if coordenadas: 
         if figura["nombre"]=="recta":
             nuevas_coordenadas = []
@@ -203,6 +204,7 @@ def figura_prueba(figura:dict, coordenadas=[]):
                         x = (x-2) + (10*indice)
                         nuevas_coordenadas.append(x)
                 figura['posicion'] = 0
+                print("Coordenadas figura_prueba/recta posicion 1 a posicion 0: ", nuevas_coordenadas)
                 return nuevas_coordenadas
             
             elif figura['posicion']==0:
@@ -218,7 +220,8 @@ def figura_prueba(figura:dict, coordenadas=[]):
                     elif indice ==3:
                         x = (x+2) - (10*indice)
                         nuevas_coordenadas.append(x)
-                figura['posicion'] = 0
+                figura['posicion'] = 1
+                print("Coordenadas figura_prueba/recta posicion 0 a posicion 1: ", nuevas_coordenadas)
                 return nuevas_coordenadas
     
         elif figura["nombre"]=="L":
@@ -306,21 +309,30 @@ def figura_prueba(figura:dict, coordenadas=[]):
 # BLOQUE DE COLISION Y LIMITES
 
 
-def limites_figura_horizontal(coordenadas:list, movimiento:int)->bool:
+def limites_figura_horizontal(coordenadas:list, movimiento:int, giro:bool)->bool:
     
     limite_h_de = [x for x in range(1, ancho*largo+1) if x%10 == 0]  # ¿filter?
     limite_h_iz = [x+1 for x in limite_h_de if x<200]             # ¿map?
-    #print(coordenadas, movimiento)
-    #print(limite_h_iz)
+    print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro}")
+    print("Limite horizontal izquierdo: ", limite_h_iz)
     #print(limite_h_de)
 
-    for coordenada in coordenadas:
-        if coordenada in limite_h_de and movimiento == 1:
-            return True
-        elif coordenada in limite_h_iz and movimiento == -1:
-            return True
-
-    return False
+    # Comprobacion de los limites en los movimientos:
+    if giro is False:
+        for coordenada in coordenadas:
+            if coordenada in limite_h_de and movimiento == 1:
+                return True
+            elif coordenada in limite_h_iz and movimiento == -1:
+                return True
+        return False
+    
+    # Comprobacion en los giros pegados al limite horizontal izquierdo:
+    else:
+        for coordenada in coordenadas:
+            if coordenada in limite_h_iz and movimiento == 5:
+                print("Confirmado giro pegado al limite izquierdo")
+                return True
+        return False
         
     
 # Funcion para obtener las coordenadas de las piezas colocadas.
@@ -410,7 +422,7 @@ def cod_mov_auto(coordenadas:list, ancho:int):
     a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
     if list(a):
         coordenadas_nuevas = map(lambda x: x-10, coordenadas_nuevas)
-        print("CONTROL")
+        print("CONTROL AUTO", coordenadas_nuevas)
         return list(coordenadas_nuevas)
     
     return coordenadas_nuevas
@@ -426,10 +438,13 @@ def mov_auto():
     count = 1
 
     global coordenadas
+    global control
     
     while True:
         time.sleep(2)
         coordenadas = cod_mov_auto(coordenadas, ancho)
+        if control:
+            exit()
         
         # seguro
         #count += 1
@@ -487,11 +502,14 @@ def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
 def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
     "Incluye el movimiento ordenado y el automatico"
 
+    print("Coordenadas en calculo de movimiento: ", coordenadas)
+
     # Variable de control para salir
     global control
 
     # Comprobacion de los limites horizontales
-    if limites_figura_horizontal(coordenadas, movimiento):
+    if limites_figura_horizontal(coordenadas, movimiento, giro=False):
+        #print("Limite horizontal activado. Movimiento = ", movimiento)
         return coordenadas
 
     # Indices para calculo del movimiento vertical y horizontal.
@@ -507,8 +525,18 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
             # movimiento vertical
             coordenadas_nuevas = [x + ancho for x in coordenadas]
         case recursos.Movimiento.GIRO:
+            # Comprobacion de los limites horizontales izquierdos en los giros:
+            if limites_figura_horizontal(coordenadas, movimiento, giro=True):
             # giro de la figura
-            coordenadas_nuevas = figura_prueba(figura, coordenadas)
+                coordenadas_temporales = figura_prueba(figura, coordenadas)
+                print("Giro sin corregir:", coordenadas_temporales, f"figura posicion: {figura["posicion"]}")
+                coordenadas_nuevas = pruebas.funcion_correctora(figura, coordenadas_temporales)
+
+                #coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
+                print(f"Giro sin corregir: {coordenadas_temporales}   ....   Giro corregido: {coordenadas_nuevas}")
+            else:
+                coordenadas_nuevas = figura_prueba(figura, coordenadas)
+                print("Giro limpio:", coordenadas_nuevas)
         case recursos.Movimiento.SALIDA:
             print("\nADIOS")
             control = True
@@ -519,7 +547,7 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
     a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
     if list(a):
         coordenadas_nuevas = map(lambda x: x-10, coordenadas_nuevas)
-        print("CONTROL")
+        print("CONTROL VOLUNTARIO")
         return list(coordenadas_nuevas)
 
     # Retorna las coordenadas de la figura una vez aplicado el movimiento
@@ -609,7 +637,7 @@ if __name__ == "__main__":
 
         # Bloque de inicio/reinicio
         if comienzo:
-            #print("Yes")
+            print("COMIENZO")
             figura = salida(recursos.figuras)
             comienzo = False
             #fijacion = False
@@ -632,9 +660,10 @@ if __name__ == "__main__":
         if hilos:
             hilo_auto = threading.Thread(target=mov_auto)
             hilo_teclado = threading.Thread(target=teclado)
-            hilo_auto.start()
+            #hilo_auto.start()
             hilo_teclado.start()
             hilos = False
+            print("HILOS")
 
         #===========================================#
 
@@ -644,6 +673,7 @@ if __name__ == "__main__":
 
         # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
+            print("CONTROLES")
             cerrojo = False                                                             # Variable de control de los eventos para los hilos
             coordenadas = control_invasion(coordenadas, lista_colision)
             screen = pantalla_pix(coordenadas, screen)
@@ -666,7 +696,8 @@ if __name__ == "__main__":
 
 
         # seguro
-        #count += 1
+        print("VUELTA: ", count)
+        count += 1
         #if count > 5:
         #    break
 
