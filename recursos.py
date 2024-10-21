@@ -5,9 +5,10 @@ from enum import Enum, IntEnum
 
 
 
-# Pantalla
+# PANTALLA
 pix_bn = "🔲"
 pix_ng = "🔳"
+seccion_bn = [pix_bn for _ in list(range(10))]
 
 screen_l = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
@@ -20,8 +21,22 @@ screen_l = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "�
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲")
 
+# Creamos una matriz con los indices de la screen.
+matriz = []
+fila = []
 
-# Figuras
+for row in range(0, 20):
+    for elem in range(0, 10):
+        n = row * 10
+        fila.append(elem + n)
+    if len(fila) == 10:
+        matriz.append(fila)
+        fila = []
+
+matriz.reverse()
+
+
+# FIGURAS
 figuras = {"recta" : {"nombre" : "recta",
            
                      "1" :       [["🔳"],
@@ -93,6 +108,30 @@ class Movimiento(IntEnum):
     GIRO = 5
     SALIDA = 6
 
+
+# Clase enum para controlar las filas completas
+# class Filas(IntEnum):
+
+#     PRIMERA = 0
+#     SEGUNDA = 1
+#     TERCERA = 2
+#     CUARTA = 3
+#     QUINTA = 4
+#     SEXTA = 5
+#     SEPTIMA = 6
+#     OCTAVA = 7
+#     NOVENA = 8
+#     DECIMA = 9
+#     UNDECIMA = 10
+#     DUODECIMA = 11
+#     DECIMOTERCERA = 12
+#     DECIMOCUARTA = 13
+#     DECIMOQUINTA = 14
+#     DECIMOSEXTA = 15
+#     DECIMOSEPTIMA = 16
+#     DECIMOOCTAVA = 17
+#     DECIMONOVENA =18
+#     VIGESIMA = 19
 
 # funcion temporal para comprobar el movimiento en main.py.
 def ordenes() -> Movimiento :

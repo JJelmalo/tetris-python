@@ -20,6 +20,7 @@
 # Pantalla
 pix_bn = "🔲"
 pix_ng = "🔳"
+seccion_bn = [pix_bn for _ in list(range(10))]
 
 screen_1 = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
@@ -38,11 +39,11 @@ screen_1 = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "�
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳",
+            "🔲", "🔲", "🔲", "🔲", "🔲", "🔳", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔳", "🔲", "🔲", "🔳", "🔲", "🔲", "🔳", "🔳")
 
-screen_2 = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
+screen_2 = ("🔲", "🔲", "🔲", "🔲", "🔳", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
@@ -58,12 +59,26 @@ screen_2 = ("🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "�
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
             "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔳", "🔲", "🔲", "🔲", "🔲", "🔲",
-            "🔲", "🔲", "🔲", "🔲", "🔳", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔲", "🔲", "🔲", "🔳", "🔳", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔳", "🔲", "🔲", "🔳", "🔳", "🔲", "🔲", "🔲", "🔲", "🔲",
+            "🔳", "🔲", "🔲", "🔳", "🔳", "🔲", "🔲", "🔲", "🔳", "🔲",
             "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳", "🔳")
 
 
+
+# Creamos una matriz con los indices de la screen.
+matriz = []
+fila = []
+
+for row in range(0, 20):
+    for elem in range(0, 10):
+        n = row * 10
+        fila.append(elem + n)
+    if len(fila) == 10:
+        matriz.append(fila)
+        fila = []
+
+matriz.reverse()
 
 
 
@@ -72,7 +87,7 @@ import threading
 from random import randint
 import time
 
-import main
+import main, recursos
 
 
 # Esta funcion va a ser el hilo, controlada por la variable externa "controlador"
@@ -249,7 +264,105 @@ def come_filas(screen:tuple)->list:
     #print(len(seccion))
     #print(seccion)
 
-    return tuple(seccion)
+    # Relativo a la alteracion de la lista de colision
+    print(lista_colision)
+    lista_colision = list(filter(lambda x: lista_colision.remove(x) if x in list(range(191, 201)) else None, lista_colision))
+    print(lista_colision)
+
+    return tuple(seccion), lista_colision
+
+
+
+def filas_mejorada(screen:tuple):
+
+    # Creamos una matriz con los indices de la screen.
+    matriz = []
+    fila = []
+
+    for row in range(0, 20):
+        for elem in range(0, 10):
+            n = row * 10
+            fila.append(elem + n)
+        if len(fila) == 10:
+            matriz.append(fila)
+            fila = []
+
+    matriz.reverse()
+    #print(matriz)
+
+    # Comprobamos fila por fila, comenzando por la ultima, si estan completas
+    row = []
+    for ind, fila in enumerate(matriz):
+        for elem in fila:
+            if screen[elem] == pix_ng:
+                row.append(True)
+            else:
+                row.append(False)
+        if all(row):
+            return True, ind
+        else:
+            row = []
+
+    return False
+
+
+# Elimina y contabiliza las filas completas
+def come_filas_mejorado(screen:tuple, indice:int, lista_colision:int)->tuple:
+    #print("Inicio")
+    #print("screen original")
+    #main.pantalla_prueba([], screen)
+    screen = list(screen)
+    #screen.reverse()
+    #print("screen al reves")
+    #main.pantalla_prueba([], screen)
+
+    # Creamos una matriz a partir de screen
+    screen_x_filas = []
+    fila = []
+
+    for elem in screen:
+        fila.append(elem)
+        if len(fila) == 10:
+            screen_x_filas.append(fila)
+            fila = []
+    #print("\nscreen_x_filas recien creada", screen_x_filas)
+    screen_x_filas.reverse()
+    #print("screen_x_filas al reves", screen_x_filas)
+
+
+    # Borramos la fila respectiva en la matriz gemela de screen. Y añadimos una fila en blanco por arriba
+    screen_x_filas.pop(indice)
+    screen_x_filas.reverse()
+    #print("\nscreen_x_filas despues de eliminar las filas completas", screen_x_filas)
+    screen_x_filas.insert(0, seccion_bn)
+    #print("\nscreen_x_filas despues de insertar las filas en blanco", screen_x_filas)
+
+    # Volvemos a convertir la matriz en una tupla
+    screen = []
+    for fila in screen_x_filas:
+        for elem in fila:
+            screen.append(elem)
+    main.pantalla_prueba([], screen)
+
+    # Actualizamos la lista de colision
+    indices_colision = matriz[indice]
+    print(indices_colision)
+    print(lista_colision)
+    for x in indices_colision:
+        lista_colision.remove(x)
+    print(lista_colision)
+
+    #print(len(screen), screen)
+    return tuple(screen), lista_colision
+
+
+# NOTAS a eliminacion de filas:
+#   . Todo funciona aparentemente correctamente excepto una cosa.
+#   . Al eliminar una fila completa, si esta tiene cuadros negros por encima de dicha fila, aunque visualmente se corran uno para abajo, 
+#   no lo hacen en la lista de colision, donde siguen manteniendo los indices previos.
+#   . Habria que correrlos todos uno para abajo (+10). Todos los que esten por encima de esa linea.
+#   . Esto hay que implementarlo en la funcion come_filas_mejorado, en el apartado de actualizacion de lista de colision.
+
 
         
 #========================================
@@ -349,15 +462,15 @@ Reporte de una linea cayendo recta (mas informacion) en su primer giro:
 def funcion_correctora(figura:dict, coordenadas_temporales:list)->list:
 
     # Datos
-    print()
-    print(figura)
-    print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"])
+    #print()
+    #print(figura)
+    #print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"])
 
     if figura["nombre"] == "L":
         if figura['posicion'] == 1  or figura['posicion'] == 3:
             coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
             coordenadas_nuevas = list(coordenadas_nuevas)
-            print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+            #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
             return coordenadas_nuevas
         
     elif figura["nombre"] == "recta":
@@ -369,77 +482,39 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list)->list:
 
 
 
+#===============================================
+
+# PROXIMA MEJORA:
+
+# Una mejor representacion:
+#   . Cada cambio en las coordenadas una llamada a la funcion pantalla_pruebas
+#   . Mantenemos la fijacion en el mismo lugar que esta ahora, y todo lo demas (bloque de control y de comienzo). 
+#   . Solo cambio los hilos y la llamada a esa funcion, que no retorna nada ni hace nada salvo representar y refrescar la imagen.
+#   . Hay que quitarle el time.sleep() del bloque de pantalla.
+#   . Hay que hacer una copia de seguridad de todo el archivo main.py antes de empezar a tocar.
+
+# Bugs:
+#   . Todos los giros se descojonan una vez se coloca la primera pieza
+#   . Las piezas elimindas siguen estando, solo he cambiado el color. ¿Lista de colision? --> visto
+#   . Cambiar el sistema de control de filas completadas, ya que si la ultima no esta completa no contabiliza las demas.
+
+
 #===============================================#
 
 # Otra excepcion
 
 
+# Giros se desestabilizan una vez colocamos la primera pieza:
 
+# Caso I:
+    # Coordenadas en la funcion figura_prueba:  [57, 67, 77, 78]
+    # Coordenadas figura_prueba/L posicion 3 a posicion 0:  []
 
-# Rango de colision []
-# Coordenadas [21, 22, 23, 24]
-# []
-# VUELTA:  47
-# Coordenadas en calculo de movimiento:  [21, 22, 23, 24]
-# Limite_figura_horizontal: [21, 22, 23, 24], 5, False
-# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
-# Limite_figura_horizontal: [21, 22, 23, 24], 5, True
-# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
-# Confirmado giro pegado al limite izquierdo
-# Coordenadas en la funcion figura_prueba:  [21, 22, 23, 24]
-# Coordenadas figura_prueba/recta posicion 1 a posicion 0:  [22, 32, 42, 52]
-# Giro sin corregir: [22, 32, 42, 52] figura posicion: 0
+    # Coordenadas en la funcion figura_prueba:  [56, 68, 87, 88]
+    # Coordenadas figura_prueba/L posicion 0 a posicion 1:  []
 
-# {'nombre': 'recta', '1': [['🔳'], ['🔳'], ['🔳'], ['🔳']], '2': ['🔳', '🔳', '🔳', '🔳'], '1ini': (5, 15, 25, 35), '2ini': (4, 5, 6, 7), 'coef_giro': 10, 'eje_giro': 0, 'posicion': 0, 'posiciones': 2, 'coordenadas': [<class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>]}
-# Nombre: recta  /  Posicion: 0
-# Giro sin corregir: [22, 32, 42, 52]   ....   Giro corregido: None
-# Exception in thread Thread-4 (teclado):
-# Traceback (most recent call last):
-#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
-#     self.run()
-#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1012, in run
-#     self._target(*self._args, **self._kwargs)
-#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 576, in teclado
-#     coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.GIRO)
-#                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 547, in calculo_movimiento_hilo
-#     a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
-#         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# TypeError: 'NoneType' object is not iterable
-
-
-# Rango de colision []
-# Coordenadas [1, 2, 3, 11]
-# []
-# VUELTA:  13
-# Coordenadas en calculo de movimiento:  [1, 2, 3, 11]
-# Limite_figura_horizontal: [1, 2, 3, 11], 5, False
-# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
-# Limite_figura_horizontal: [1, 2, 3, 11], 5, True
-# Limite horizontal izquierdo:  [11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171, 181, 191]
-# Confirmado giro pegado al limite izquierdo
-# Coordenadas en la funcion figura_prueba:  [1, 2, 3, 11]
-# 1
-# Giro sin corregir: [2, 3, 13, 23] figura posicion: 2
-
-# {'nombre': 'L', '1': [['🔳'], ['🔳'], ['🔳', '🔳']], '2': [['🔳', '🔳', '🔳'], ['🔳']], '3': [['🔳', '🔳'], ['🔳'], ['🔳']], '4': [['🔳'], ['🔳', '🔳', '🔳']], '1ini': (5, 15, 25, 26), '2ini': (4, 5, 6, 14), '3ini': (5, 6, 16, 26), '4ini': (6, 14, 15, 16), 'coef_giro': 10, 'eje_giro': 2, 'posicion': 2, 'posiciones': 4, 'coordenadas': [<class 'int'>, <class 'int'>, <class 'int'>, <class 'int'>]}
-# Nombre: L  /  Posicion: 2
-# Giro sin corregir: [2, 3, 13, 23]   ....   Giro corregido: None
-# Exception in thread Thread-4 (teclado):
-# Traceback (most recent call last):
-#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
-#     self.run()
-#   File "C:\Users\Antonio J\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1012, in run
-#     self._target(*self._args, **self._kwargs)
-#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 576, in teclado
-#     coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.GIRO)
-#                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-#   File "c:\Pruebas\PROGRAMACION\Repositorios\Tetris\main.py", line 547, in calculo_movimiento_hilo
-#     a = filter(lambda x: x if x > 200 else None, coordenadas_nuevas)
-#         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# TypeError: 'NoneType' object is not iterable
-
-
+    # Coordenadas en la funcion figura_prueba:  [56, 68, 87, 88]
+    # Coordenadas figura_prueba/L posicion 0 a posicion 1:  []
 
 
 #===============================================================================================================================================#
@@ -460,8 +535,11 @@ if __name__ == "__main__":
     #print(prueba())
     print("\n"*2)
     #print(control_invasion([95, 105, 115, 125], [165, 175, 185, 195]))
-    #print(filas(main.screen))
-    print(type(come_filas(screen_2)))
+    booleano, indice = filas_mejorada(screen_2)
+    #print(booleano)
+    pantalla = come_filas_mejorado(screen_2, indice, [190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 184, 174])
+    #print(type(pantalla), len(pantalla))
+    #print(pantalla)
 
 
 
