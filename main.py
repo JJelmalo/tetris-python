@@ -142,6 +142,15 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
         count += 1
     print(imagen)
 
+    # Marcador
+    ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
+    print("="*ancho_marcador)
+    print("|", " "*(ancho_marcador-4), "|")
+    print(f"|  Resultado:  {acumulado}  |")
+    print("|", " "*(ancho_marcador-4), "|")
+    print("="*ancho_marcador)
+    print(f"\t+{resultado}")
+
 
 #=======================================#
 
@@ -170,7 +179,7 @@ def figura_giros(figura:dict, coordenadas):
     # Giran un coeficiente que se suma a los elmentos. Gira sobre un eje que es un elmeneto que no cambia su coordenada. Y giran en una 
     # direccion, que esta definida en + ó - segun el punto en el eje de ordenadas (mitad de las posiciones +, mitad negativo).
     figura = figura
-    print("Coordenadas al inicio de los calculos-giros en la funcion figura_prueba: ", coordenadas, ". La posicion de la figura: ", figura["posicion"])
+    #print("Coordenadas al inicio de los calculos-giros en la funcion figura_prueba: ", coordenadas, ". La posicion de la figura: ", figura["posicion"])
     if figura["nombre"]=="recta":
         nuevas_coordenadas = []
         if figura['posicion']==1:
@@ -187,7 +196,7 @@ def figura_giros(figura:dict, coordenadas):
                     x = (x-2) + (10*indice)
                     nuevas_coordenadas.append(x)
             figura['posicion'] = 0
-            print("Coordenadas figura_prueba/recta posicion 1 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            #print("Coordenadas figura_prueba/recta posicion 1 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             return nuevas_coordenadas
             
         elif figura['posicion']==0:
@@ -204,13 +213,13 @@ def figura_giros(figura:dict, coordenadas):
                     x = (x+2) - (10*indice)
                     nuevas_coordenadas.append(x)
             figura['posicion'] = 1
-            print("Coordenadas figura_prueba/recta posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            #print("Coordenadas figura_prueba/recta posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             return nuevas_coordenadas
     
     elif figura["nombre"]=="L":
         nuevas_coordenadas = []
         if figura['posicion']==0:
-            print("Coordenadas figura_prueba/L posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            #print("Coordenadas figura_prueba/L posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             for indice, x in enumerate(coordenadas):
                 if indice==0:
                     x = x-1
@@ -228,7 +237,7 @@ def figura_giros(figura:dict, coordenadas):
             return nuevas_coordenadas
     
         elif figura["posicion"]==1:
-            print("Coordenadas figura_prueba/L posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            #print("Coordenadas figura_prueba/L posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             for indice, x in enumerate(coordenadas):
                 if indice==0:
                     x = x+1
@@ -246,7 +255,7 @@ def figura_giros(figura:dict, coordenadas):
             return nuevas_coordenadas
             
         elif figura["posicion"]==2:
-            print("Coordenadas figura_prueba/L posicion 2 a posicion 3: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            #print("Coordenadas figura_prueba/L posicion 2 a posicion 3: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             for indice, x in enumerate(coordenadas):
                 if indice==0:
                     x = x+1
@@ -264,7 +273,7 @@ def figura_giros(figura:dict, coordenadas):
             return nuevas_coordenadas
             
         elif figura["posicion"]==3:
-            print("Coordenadas figura_prueba/L posicion 3 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            #print("Coordenadas figura_prueba/L posicion 3 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             for indice, x in enumerate(coordenadas):
                 if indice==0:
                     x = x-1
@@ -347,7 +356,7 @@ def colision(coordenadas:list, lista_colision:list)->bool:
     #print(list(filter(lambda x: x in rango_colision, coordenadas)))
 
     if list(filter(lambda x: x in rango_colision, coordenadas)):
-        print("COLISION Is True")
+        #print("COLISION Is True")
         return True
     
     else:
@@ -357,8 +366,8 @@ def colision(coordenadas:list, lista_colision:list)->bool:
 # Funcion para evitar que la figura en juego se monte sobre las piezas ya colocadas. Compara las coordenadas de la piezs en juego con las 
 # estacionadas (lista de colision)
 def control_invasion(coordenadas:list, indices:list) -> list:
-    print("Coordenadas invasion: ", coordenadas)
-    print("lista de colision: ", indices)
+    #print("Coordenadas invasion: ", coordenadas)
+    #print("lista de colision: ", indices)
     invasion = list(filter(lambda x: True if x in indices else False, coordenadas))
 
     while any(invasion):
@@ -367,9 +376,9 @@ def control_invasion(coordenadas:list, indices:list) -> list:
         if any(invasion):
             continue
         else:
-            print("Coordenadas invasion purgada: ", coordenadas)
+            #print("Coordenadas invasion purgada: ", coordenadas)
             return coordenadas
-    print("Coordenadas salidas invasion sin ¿necesidad? de purgar", coordenadas)    
+    #print("Coordenadas salidas invasion sin ¿necesidad? de purgar", coordenadas)    
     return coordenadas
 
 
@@ -485,7 +494,7 @@ def calculo_movimiento(coordenadas:list, movimiento:recursos.Movimiento):
 def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
     "Incluye el movimiento ordenado y el automatico"
 
-    print("Coordenadas en calculo de movimiento: ", coordenadas)
+    #print("Coordenadas en calculo de movimiento: ", coordenadas)
 
     # Variable de control para salir
     global control
@@ -549,7 +558,7 @@ def teclado():
     while True:
         evento = keyboard.read_event()
         if evento.event_type == keyboard.KEY_DOWN:
-            print(evento.name)
+            #print(evento.name)
             if evento.name.lower() == "a":
                 coordenadas = calculo_movimiento_hilo(coordenadas, recursos.Movimiento.IZQUIERDA) 
             elif evento.name.lower() == "d":
@@ -633,13 +642,13 @@ def come_filas_mejorado(screen:tuple, indice:int, lista_colision:int)->tuple:
 
     # Actualizamos la lista de colision
     indices_colision = recursos.matriz[indice]
-    print("Indices de colision en come filas", indices_colision)
-    print("Lista de colision en come_filas antes de actualizar los indices restantes", lista_colision)
+    #print("Indices de colision en come filas", indices_colision)
+    #print("Lista de colision en come_filas antes de actualizar los indices restantes", lista_colision)
     for x in indices_colision:
         print(x)
         lista_colision.remove(x)
-    print("Lista de colision en come_filas despues de actualizar los indices restantes", lista_colision)
-    print("Numero a partir del cual deberia ser sumados: ", min(recursos.matriz[indice]))
+    #print("Lista de colision en come_filas despues de actualizar los indices restantes", lista_colision)
+    #print("Numero a partir del cual deberia ser sumados: ", min(recursos.matriz[indice]))
     nueva_lista_colision = []
     for x in lista_colision:
         if x < min(recursos.matriz[indice]):
@@ -647,13 +656,35 @@ def come_filas_mejorado(screen:tuple, indice:int, lista_colision:int)->tuple:
             nueva_lista_colision.append(x)
         else:
             nueva_lista_colision.append(x)
-    print("Lista de colision final en come_filas", nueva_lista_colision)
+    #print("Lista de colision final en come_filas", nueva_lista_colision)
 
     #print(len(screen), screen)
     return tuple(screen), nueva_lista_colision
 
 
 
+#=======================================#
+
+
+# MARCADOR
+
+def marcador(count:int, acumulado):
+
+    match count:
+        case 1:
+            multiplicador = 100
+        case 2:
+            multiplicador = 200
+        case 3 | 4:
+            multiplicador = 300
+        case 5 | 6 | 7 | 8:
+            multiplicador = 500
+
+
+    resultado = multiplicador * count
+    acumulado = acumulado + resultado
+
+    return acumulado, resultado
 
 
 #=======================================#
@@ -689,6 +720,8 @@ if __name__ == "__main__":
     count = 0
     control = False
     cerrojo = True
+    acumulado = 0
+    resultado = 0
 
 
     # Cabecera
@@ -715,7 +748,7 @@ if __name__ == "__main__":
 
         # Bloque de inicio/reinicio
         if comienzo:
-            print("COMIENZO")
+            #print("COMIENZO")
             figura, coordenadas = salida(recursos.figuras)
             comienzo = False
             #fijacion = False
@@ -742,7 +775,7 @@ if __name__ == "__main__":
             hilo_auto.start()
             hilo_teclado.start()
             hilos = False
-            print("HILOS")
+            #print("HILOS")
 
         #===========================================#
 
@@ -752,13 +785,13 @@ if __name__ == "__main__":
 
         # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
-            print("CONTROLES")
+            #print("CONTROLES")
             cerrojo = False                                                             # Variable de control de los eventos para los hilos
             coordenadas = control_invasion(coordenadas, lista_colision)
             screen = pantalla_pix(coordenadas, screen)
             pantalla_prueba(coordenadas, screen)
             lista_colision = indices_colision(coordenadas, lista_colision)
-            print("Lista de colision: ", lista_colision)
+            #print("Lista de colision: ", lista_colision)
             comienzo = True
             # Aqui iria el condicional para controlar la filas resueltas
             while True:
@@ -767,13 +800,15 @@ if __name__ == "__main__":
                     break
                 #lista_colision = indices_colision(coordenadas, lista_colision)
                 screen, lista_colision = come_filas_mejorado(screen, indice, lista_colision)
-                print("Lista de colision de come_filas: ", lista_colision)
+                #print("Lista de colision de come_filas: ", lista_colision)
                 pantalla_prueba(coordenadas, screen)
                 time.sleep(1.5)
                 count += 1
+            # Marcador
             if count:
-                pass
+                acumulado, resultado = marcador(count, acumulado)
                 count = 0
+
 
         # Control
         if control:

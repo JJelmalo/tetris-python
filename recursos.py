@@ -109,6 +109,11 @@ class Movimiento(IntEnum):
     SALIDA = 6
 
 
+# Clase enum para llevar el marcador
+# class Marca(IntEnum):
+
+#     PRIMER_ESCALON = 1
+
 # Clase enum para controlar las filas completas
 # class Filas(IntEnum):
 

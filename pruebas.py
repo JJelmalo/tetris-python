@@ -486,21 +486,39 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list)->list:
 
 
 
-#===============================================
+#===============================================#
+
+# MARCADOR
+
+def marcador(count:int, acumulado):
+
+    match count:
+        case 1:
+            multiplicador = 100
+        case 2:
+            multiplicador = 200
+        case 3 | 4:
+            multiplicador = 300
+        case 5 | 6 | 7 | 8:
+            multiplicador = 500
+
+
+    resultado = multiplicador * count
+    acumulado = acumulado + resultado
+
+    return acumulado, resultado
+
+
+
+#===============================================#
 
 # PROXIMA MEJORA:
 
 # Una mejor representacion:
-#   . Cada cambio en las coordenadas una llamada a la funcion pantalla_pruebas
-#   . Mantenemos la fijacion en el mismo lugar que esta ahora, y todo lo demas (bloque de control y de comienzo). 
-#   . Solo cambio los hilos y la llamada a esa funcion, que no retorna nada ni hace nada salvo representar y refrescar la imagen.
-#   . Hay que quitarle el time.sleep() del bloque de pantalla.
-#   . Hay que hacer una copia de seguridad de todo el archivo main.py antes de empezar a tocar.
+#
 
 # Bugs:
-#   . Todos los giros se descojonan una vez se coloca la primera pieza
-#   . Las piezas elimindas siguen estando, solo he cambiado el color. ¿Lista de colision? --> visto
-#   . Cambiar el sistema de control de filas completadas, ya que si la ultima no esta completa no contabiliza las demas.
+#   . El mismo bug que habia en los giros en el margen izquierdo, se da en el margen derecho, al menos con la recta.
 
 
 #===============================================#
