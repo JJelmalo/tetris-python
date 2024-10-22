@@ -65,6 +65,9 @@ ancho = dimensiones_pantalla[1]
 
 screen = [pix_bn for _ in range(1, 201)]
 seccion = [pix_bn for _ in list(range(10))]
+limite_h_de = [x for x in range(1, ancho*largo+1) if x%10 == 0]
+limite_h_iz = [x+1 for x in limite_h_de if x<200]
+limite_h_de_esp = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99, 109, 119, 129, 139, 149, 159, 169, 179, 189, 199]
 
 evento_1 = threading.Event()
 
@@ -106,7 +109,7 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     'Dibuja la figura en la pantalla'
 
     # Borramos la pantalla
-    os.system("cls")
+    #os.system("cls")
 
     # Creamos la pantalla en blanco-scream y asi nos evitamos pasarla por parametro. Usamos el guion bajo.
     screen = list(screen)
@@ -144,12 +147,12 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
 
     # Marcador
     ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
-    print("="*ancho_marcador)
-    print("|", " "*(ancho_marcador-4), "|")
-    print(f"|  Resultado:  {acumulado}  |")
-    print("|", " "*(ancho_marcador-4), "|")
-    print("="*ancho_marcador)
-    print(f"\t+{resultado}")
+    # print("="*ancho_marcador)
+    # print("|", " "*(ancho_marcador-4), "|")
+    # print(f"|  Resultado:  {acumulado}  |")
+    # print("|", " "*(ancho_marcador-4), "|")
+    # print("="*ancho_marcador)
+    # print(f"\t+{resultado}")
 
 
 #=======================================#
@@ -297,31 +300,62 @@ def figura_giros(figura:dict, coordenadas):
 # BLOQUE DE COLISION Y LIMITES
 
 
-def limites_figura_horizontal(coordenadas:list, movimiento:int, giro:bool)->bool:
+def limites_figura_horizontal(coordenadas:list, movimiento:int, giro:bool):
     
     limite_h_de = [x for x in range(1, ancho*largo+1) if x%10 == 0]  # ¿filter?
     limite_h_iz = [x+1 for x in limite_h_de if x<200]             # ¿map?
+    limite_h_de_esp = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99, 109, 119, 129, 139, 149, 159, 169, 179, 189, 199]
+    lado = None
+    limite = None
+
     
     #print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro}")
     #print("Limite horizontal izquierdo: ", limite_h_iz)
-    #print(limite_h_de)
+    #print("Limite horizontal derecho: ", limite_h_de)
 
-    # Comprobacion de los limites en los movimientos:
+    # Comprobacion de los limites en los movimientos. El lado izquierdo es definido como Falso
     if giro is False:
         for coordenada in coordenadas:
             if coordenada in limite_h_de and movimiento == 1:
-                return True
+                limite, lado = True, True
+                return limite, lado
             elif coordenada in limite_h_iz and movimiento == -1:
-                return True
-        return False
+                limite, lado = True, False
+                return limite, lado
+        limite = False
+        lado = None
+        return limite, lado
     
-    # Comprobacion en los giros pegados al limite horizontal izquierdo:
-    else:
+    # Comprobacion en los giros pegados al limite horizontal:
+    # Especial para las rectas
+    elif giro is True and figura["nombre"]=="recta":
         for coordenada in coordenadas:
             if coordenada in limite_h_iz and movimiento == 5:
                 #print("Confirmado giro pegado al limite izquierdo")
-                return True
-        return False
+                limite, lado = True, False
+                return limite, lado
+            elif coordenada in limite_h_de and movimiento ==5:
+                limite, lado = True, True
+                return limite, lado
+            elif coordenada in limite_h_de_esp and movimiento ==5:
+                limite, lado = True, True
+                return limite, lado
+        limite = False
+        lado = None
+        return limite, lado
+    
+    elif giro:
+        for coordenada in coordenadas:
+            if coordenada in limite_h_iz and movimiento == 5:
+                #print("Confirmado giro pegado al limite izquierdo")
+                limite, lado = True, False
+                return limite, lado
+            elif coordenada in limite_h_de and movimiento ==5:
+                limite, lado = True, True
+                return limite, lado
+        limite = False
+        lado = None
+        return limite, lado
         
     
 # Funcion para obtener las coordenadas de las piezas colocadas.
@@ -396,6 +430,48 @@ def limites_vertical(coordenadas:list)->bool:
             return True
         
     return False
+
+
+
+# Funcion correctora en los giros pegados al limites horizontal izquierdo.
+# Hay una malfuncion en algunos giros. Habra que cribar por giros.
+# Hemos añadido un marcador del lado, porque empezo a dar problemas en derecho tambien Pero ha dejado de darlos. Si reaparecen desarrollo 
+# la correcion en el lado derecho
+def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->list:
+
+    # Datos
+    #print()
+    #print(figura)
+    print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"], " / ", "lado:", lado)
+
+    if figura["nombre"] == "L":
+    # Margen izquierdo
+        if lado is False:
+            if figura['posicion'] == 1  or figura['posicion'] == 3:
+                coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
+                coordenadas_nuevas = list(coordenadas_nuevas)
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                return coordenadas_nuevas
+        
+    elif figura["nombre"] == "recta":
+    # Margen izquierdo
+        if lado is False:
+            if figura['posicion'] == 1:
+                coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
+                return list(coordenadas_nuevas)
+    # Margen derecho
+        if lado and coordenadas_temporales in limite_h_de:
+            if figura['posicion'] == 1:
+                print("Pegada")
+                coordenadas_nuevas = map(lambda x: x-2, coordenadas_temporales)
+                return list(coordenadas_nuevas)
+        elif lado and coordenadas_temporales in limite_h_de_esp:
+            if figura['posicion'] == 1:
+                print("Casi pegada")
+                coordenadas_nuevas = map(lambda x: x-1, coordenadas_temporales)
+                return list(coordenadas_nuevas)
+        
+    return coordenadas_temporales
 
 
 #=======================================#
@@ -500,7 +576,8 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
     global control
 
     # Comprobacion de los limites horizontales
-    if limites_figura_horizontal(coordenadas, movimiento, giro=False):
+    limite, lado = limites_figura_horizontal(coordenadas, movimiento, giro=False)
+    if limite:
         #print("Limite horizontal activado. Movimiento = ", movimiento)
         return coordenadas
 
@@ -518,11 +595,12 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
             coordenadas_nuevas = [x + ancho for x in coordenadas]
         case recursos.Movimiento.GIRO:
             # Comprobacion de los limites horizontales izquierdos en los giros:
-            if limites_figura_horizontal(coordenadas, movimiento, giro=True):
+            limite, lado = limites_figura_horizontal(coordenadas, movimiento, giro=True)
+            if limite:
             # giro de la figura
                 coordenadas_temporales = figura_giros(figura, coordenadas)
                 #print("Giro sin corregir:", coordenadas_temporales, f"figura posicion: {figura["posicion"]}")
-                coordenadas_nuevas = pruebas.funcion_correctora(figura, coordenadas_temporales)
+                coordenadas_nuevas = pruebas.funcion_correctora(figura, coordenadas_temporales, lado)
 
                 #coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
                 #print(f"Giro sin corregir: {coordenadas_temporales}   ....   Giro corregido: {coordenadas_nuevas}")

@@ -463,7 +463,9 @@ Reporte de una linea cayendo recta (mas informacion) en su primer giro:
 
 # Funcion correctora en los giros pegados al limites horizontal izquierdo.
 # Hay una malfuncion en algunos giros. Habra que cribar por giros.
-def funcion_correctora(figura:dict, coordenadas_temporales:list)->list:
+# Hemos añadido un marcador del lado, porque empezo a dar problemas en derecho tambien Pero ha dejado de darlos. Si reaparecen desarrollo 
+# la correcion en el lado derecho
+def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->list:
 
     # Datos
     #print()
@@ -471,16 +473,25 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list)->list:
     #print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"])
 
     if figura["nombre"] == "L":
-        if figura['posicion'] == 1  or figura['posicion'] == 3:
-            coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
-            coordenadas_nuevas = list(coordenadas_nuevas)
-            #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
-            return coordenadas_nuevas
+    # Margen izquierdo
+        if lado is False:
+            if figura['posicion'] == 1  or figura['posicion'] == 3:
+                coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
+                coordenadas_nuevas = list(coordenadas_nuevas)
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                return coordenadas_nuevas
         
     elif figura["nombre"] == "recta":
-        if figura['posicion'] == 1:
-            coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
-            return list(coordenadas_nuevas)
+    # Margen izquierdo
+        if lado is False:
+            if figura['posicion'] == 1:
+                coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
+                return list(coordenadas_nuevas)
+    # Margen derecho
+        if lado:
+            if figura['posicion'] == 1:
+                coordenadas_nuevas = map(lambda x: x-2, coordenadas_temporales)
+                return list(coordenadas_nuevas)
         
     return coordenadas_temporales
 
