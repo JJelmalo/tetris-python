@@ -337,23 +337,27 @@ def come_filas_mejorado(screen:tuple, indice:int, lista_colision:int)->tuple:
     screen_x_filas.insert(0, seccion_bn)
     #print("\nscreen_x_filas despues de insertar las filas en blanco", screen_x_filas)
 
-    # Volvemos a convertir la matriz en una tupla
+    # Volvemos a convertir la matriz en una tupla. 
     screen = []
     for fila in screen_x_filas:
         for elem in fila:
             screen.append(elem)
     main.pantalla_prueba([], screen)
 
-    # Actualizamos la lista de colision
+    # Actualizamos la lista de colision, apartir de la matriz de valores. El indice parte de una matriz al reves, por lo que hay que tenerlo en cuenta
     indices_colision = matriz[indice]
     print(indices_colision)
     print(lista_colision)
     for x in indices_colision:
         lista_colision.remove(x)
+    # indices a actualizar en lista de colision:
+    n = min(matriz[indice])
+    nueva_lista_colision = list(map(lambda x: x+10 if x < n else None, lista_colision))
+ 
     print(lista_colision)
 
     #print(len(screen), screen)
-    return tuple(screen), lista_colision
+    return tuple(screen), nueva_lista_colision
 
 
 # NOTAS a eliminacion de filas:

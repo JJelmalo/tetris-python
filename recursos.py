@@ -26,7 +26,7 @@ matriz = []
 fila = []
 
 for row in range(0, 20):
-    for elem in range(0, 10):
+    for elem in range(1, 11):
         n = row * 10
         fila.append(elem + n)
     if len(fila) == 10:

@@ -106,7 +106,7 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     'Dibuja la figura en la pantalla'
 
     # Borramos la pantalla
-    #os.system("cls")
+    os.system("cls")
 
     # Creamos la pantalla en blanco-scream y asi nos evitamos pasarla por parametro. Usamos el guion bajo.
     screen = list(screen)
@@ -577,7 +577,7 @@ def filas_mejorada(screen:tuple):
     fila = []
 
     for row in range(0, 20):
-        for elem in range(0, 10):
+        for elem in range(1, 11):
             n = row * 10
             fila.append(elem + n)
         if len(fila) == 10:
@@ -588,9 +588,10 @@ def filas_mejorada(screen:tuple):
 
     # Comprobamos fila por fila, comenzando por la ultima, si estan completas
     row = []
+    print(len(screen))
     for ind, fila in enumerate(matriz):
         for elem in fila:
-            if screen[elem] == pix_ng:
+            if screen[elem-1] == pix_ng:
                 row.append(True)
             else:
                 row.append(False)
@@ -633,14 +634,23 @@ def come_filas_mejorado(screen:tuple, indice:int, lista_colision:int)->tuple:
     # Actualizamos la lista de colision
     indices_colision = recursos.matriz[indice]
     print("Indices de colision en come filas", indices_colision)
-    print("Lista de colision en come_filas", lista_colision)
+    print("Lista de colision en come_filas antes de actualizar los indices restantes", lista_colision)
     for x in indices_colision:
         print(x)
         lista_colision.remove(x)
-    print(lista_colision)
+    print("Lista de colision en come_filas despues de actualizar los indices restantes", lista_colision)
+    print("Numero a partir del cual deberia ser sumados: ", min(recursos.matriz[indice]))
+    nueva_lista_colision = []
+    for x in lista_colision:
+        if x < min(recursos.matriz[indice]):
+            x = x + 10
+            nueva_lista_colision.append(x)
+        else:
+            nueva_lista_colision.append(x)
+    print("Lista de colision final en come_filas", nueva_lista_colision)
 
     #print(len(screen), screen)
-    return tuple(screen), lista_colision
+    return tuple(screen), nueva_lista_colision
 
 
 
@@ -755,7 +765,7 @@ if __name__ == "__main__":
                 boleano, indice = filas_mejorada(screen)
                 if not boleano:
                     break
-                lista_colision = indices_colision(coordenadas, lista_colision)
+                #lista_colision = indices_colision(coordenadas, lista_colision)
                 screen, lista_colision = come_filas_mejorado(screen, indice, lista_colision)
                 print("Lista de colision de come_filas: ", lista_colision)
                 pantalla_prueba(coordenadas, screen)
