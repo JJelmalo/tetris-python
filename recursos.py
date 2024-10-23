@@ -95,6 +95,59 @@ figuras = {"recta" : {"nombre" : "recta",
 
                     "coordenadas" : [int, int, int, int]
                     },
+
+            "L_inv" :   {"nombre" : "L_inv",
+            
+					"1" :        [["🔳"],
+                                  ["🔳"],
+                            ["🔳","🔳"]],
+
+                    "2" :  [["🔳"],
+                           ["🔳", "🔳", "🔳"]],
+
+                    "3" :  [["🔳", "🔳"],
+                            ["🔳"],
+                            ["🔳"]],
+
+                    "4" : [["🔳", "🔳", "🔳"],
+                                        ["🔳"]],
+
+                    "1ini" : (6, 16, 26, 25),
+
+                    "2ini" : (5, 15, 16, 17),
+
+                    "3ini" : (6, 7, 16, 26),
+
+                    "4ini" : (5, 6, 7, 17),
+                    
+                    "coef_giro" : 10,
+
+                    "eje_giro" : 2,
+
+                    "posicion" : 0,
+
+                    "posiciones" : 4,
+
+                    "coordenadas" : [int, int, int, int]
+                    },
+
+            "cuadrado" : {"nombre" : "cuadrado",
+                    
+                    "1" :       [["🔳","🔳"],
+                                 ["🔳","🔳"]],
+
+                    "1ini" : (5, 6, 15, 16),
+
+                    "coef_giro" : 10,
+
+                    "eje_giro" : 0,
+
+                    "posicion" : 0,
+
+                    "posiciones" : 1,
+
+                    "coordenadas" : [int, int, int, int]
+                    },
     }
 
 

@@ -33,7 +33,7 @@
 # si seria mejor hacerlo cun matriz 2D.
 
 
-# C: Pruebas/PROGRAMACION/Repositorios/Tetris
+# C:Pruebas/PROGRAMACION/Repositorios/Tetris
 
 
 
@@ -146,7 +146,7 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     print(imagen)
 
     # Marcador
-    ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
+    #ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
     # print("="*ancho_marcador)
     # print("|", " "*(ancho_marcador-4), "|")
     # print(f"|  Resultado:  {acumulado}  |")
@@ -203,6 +203,7 @@ def figura_giros(figura:dict, coordenadas):
             return nuevas_coordenadas
             
         elif figura['posicion']==0:
+            # Control para los giros a un pix del margen derecho
             for indice, x in enumerate(coordenadas):
                 if indice == 0:
                     nuevas_coordenadas.append(x-1)
@@ -292,6 +293,83 @@ def figura_giros(figura:dict, coordenadas):
                     nuevas_coordenadas.append(x)
             figura['posicion'] = 0
             return nuevas_coordenadas
+        
+    elif figura["nombre"]=="L_inv":
+        nuevas_coordenadas = []
+        if figura['posicion']==0:
+            #print("Coordenadas figura_prueba/L_inv posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x-1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x-1
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x-10
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x-8
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 1
+            return nuevas_coordenadas
+    
+        elif figura["posicion"]==1:
+            #print("Coordenadas figura_prueba/L_inv posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x-8
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x+9
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 2
+            return nuevas_coordenadas
+    
+        elif figura["posicion"]==2:
+            #print("Coordenadas figura_prueba/L_inv posicion 2 a posicion 3: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x-1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x-1
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x-9
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x-9
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 3
+            return nuevas_coordenadas
+
+        elif figura["posicion"]==3:
+            #print("Coordenadas figura_prueba/L_inv posicion 4 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x+10
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x+19
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x+8
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 0
+            return nuevas_coordenadas
+        
+    elif figura["nombre"]=="cuadrado":
+        return coordenadas
             
 
 #=======================================#
@@ -309,7 +387,7 @@ def limites_figura_horizontal(coordenadas:list, movimiento:int, giro:bool):
     limite = None
 
     
-    #print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro}")
+    #print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro},", figura['posicion'])
     #print("Limite horizontal izquierdo: ", limite_h_iz)
     #print("Limite horizontal derecho: ", limite_h_de)
 
@@ -442,7 +520,7 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->lis
     # Datos
     #print()
     #print(figura)
-    print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"], " / ", "lado:", lado)
+    print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"], " / ", "lado:", lado, " / ", "coordenadas de entrada:", coordenadas_temporales )
 
     if figura["nombre"] == "L":
     # Margen izquierdo
@@ -452,25 +530,45 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->lis
                 coordenadas_nuevas = list(coordenadas_nuevas)
                 #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return coordenadas_nuevas
-        
+            
+    elif figura["nombre"] == "L_inv":
+    # Margen derecho
+        if lado:
+            print("Lado derecho")
+            if figura['posicion'] == 1:
+                coordenadas_nuevas = map(lambda x: x-1, coordenadas_temporales)
+                coordenadas_nuevas = list(coordenadas_nuevas)
+                print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                return coordenadas_nuevas
+    # Margen izquierdo
+        elif lado is False:
+            print("Lado izquierdo")
+            if figura["posicion"] == 3:
+                coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
+                print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                return coordenadas_nuevas
+            
     elif figura["nombre"] == "recta":
+        print("Figura recta")
     # Margen izquierdo
         if lado is False:
+            print("Lado izquierdo")
             if figura['posicion'] == 1:
+                print("Figura posicion 1")
                 coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
+                print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return list(coordenadas_nuevas)
     # Margen derecho
-        if lado and coordenadas_temporales in limite_h_de:
-            if figura['posicion'] == 1:
-                print("Pegada")
-                coordenadas_nuevas = map(lambda x: x-2, coordenadas_temporales)
-                return list(coordenadas_nuevas)
-        elif lado and coordenadas_temporales in limite_h_de_esp:
-            if figura['posicion'] == 1:
-                print("Casi pegada")
-                coordenadas_nuevas = map(lambda x: x-1, coordenadas_temporales)
-                return list(coordenadas_nuevas)
+        if lado and figura['posicion'] == 1:
+            print("Lado derecho")
+            coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_temporales))
+            print("Casi Pegada", coordenadas_nuevas)
+            if filter(lambda x: x in limite_h_de, coordenadas_nuevas):
+                coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_nuevas))
+                print("Pegada", coordenadas_nuevas)
+                return coordenadas_nuevas
         
+    print("Ninguno de los supuestos")
     return coordenadas_temporales
 
 
@@ -599,11 +697,11 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
             if limite:
             # giro de la figura
                 coordenadas_temporales = figura_giros(figura, coordenadas)
-                #print("Giro sin corregir:", coordenadas_temporales, f"figura posicion: {figura["posicion"]}")
-                coordenadas_nuevas = pruebas.funcion_correctora(figura, coordenadas_temporales, lado)
+                print("Giro sin corregir:", coordenadas_temporales, f"figura posicion: {figura["posicion"]}")
+                coordenadas_nuevas = funcion_correctora(figura, coordenadas_temporales, lado)
 
                 #coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
-                #print(f"Giro sin corregir: {coordenadas_temporales}   ....   Giro corregido: {coordenadas_nuevas}")
+                #print(f"Giro corregido: {coordenadas_temporales}   ....   Giro corregido: {coordenadas_nuevas}")
             else:
                 coordenadas_nuevas = figura_giros(figura, coordenadas)
                 #print("Giro limpio:", coordenadas_nuevas)
