@@ -131,6 +131,54 @@ figuras = {"recta" : {"nombre" : "recta",
                     "coordenadas" : [int, int, int, int]
                     },
 
+            "cuatro" :   {"nombre" : "cuatro",
+            
+					"1" :        [["🔳","🔳"],
+                            ["🔳","🔳"]],
+
+                    "2" :  [["🔳"], 
+                            ["🔳", "🔳"],
+                                   ["🔳"]],
+
+                    "1ini" : (5, 6, 14, 15),
+
+                    "2ini" : (5, 15, 16, 26),
+                    
+                    "coef_giro" : 10,
+
+                    "eje_giro" : 2,
+
+                    "posicion" : 0,
+
+                    "posiciones" : 2,
+
+                    "coordenadas" : [int, int, int, int]
+                    },
+
+            "cuatro_inv" :   {"nombre" : "cuatro_inv",
+            
+					"1" :   [["🔳","🔳"],
+                                   ["🔳","🔳"]],
+
+                    "2" :         [["🔳"], 
+                            ["🔳", "🔳"],
+                            ["🔳"]],
+
+                    "1ini" : (5, 6, 16, 17),
+
+                    "2ini" : (6, 15, 16, 25),
+                    
+                    "coef_giro" : 10,
+
+                    "eje_giro" : 2,
+
+                    "posicion" : 0,
+
+                    "posiciones" : 2,
+
+                    "coordenadas" : [int, int, int, int]
+                    },
+
             "cuadrado" : {"nombre" : "cuadrado",
                     
                     "1" :       [["🔳","🔳"],
@@ -162,10 +210,20 @@ class Movimiento(IntEnum):
     SALIDA = 6
 
 
-# Clase enum para llevar el marcador
-# class Marca(IntEnum):
+# Clase enum para los niveles:
+class Niveles(IntEnum):
 
-#     PRIMER_ESCALON = 1
+    UNO = 1
+    DOS = 2
+    TRES = 3
+    CUATRO = 4
+    CINCO = 5
+    SEIS = 6
+    SIETE = 7
+    OCHO = 8
+    NUEVE = 9
+    DIEZ = 10
+
 
 # Clase enum para controlar las filas completas
 # class Filas(IntEnum):

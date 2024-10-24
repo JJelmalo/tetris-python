@@ -82,26 +82,38 @@ evento_1 = threading.Event()
 def pantalla_pix(coordenadas:list, screen:tuple)->tuple:
     
     screen = list(screen)
-
     imagen = ""
-
     #print("Coordendas de patalla_pix: ", coordenadas)
 
-    # Creando la imagen en la pantalla (lista)
-    for elemento in coordenadas:
-        screen.pop(elemento-1)
-        screen.insert(elemento-1, pix_ng)
-    #print(screen)
-    count = 1
-    for caracter in screen:
-        if count == 10:
-            imagen = imagen + caracter + "\n"
-            count = 0
-        else:
-            imagen = imagen + caracter
-        count += 1
+    # Comprobacion limite superior
+    if list(filter(lambda x: x<=0, coordenadas)):
+        coordenadas = list(filter(lambda x: x>0, coordenadas))
+        final = True
+    else:
+        final = False
 
-    return tuple(screen)
+    # Comprobacion de reinicio de la pantalla
+    if reinicio:
+        screen = [pix_bn for _ in range(1, 201)]
+
+    # Trasfiriendo las coordenadas de la figura a la pantalla (lista)
+    else:
+        for elemento in coordenadas:
+            screen.pop(elemento-1)
+            screen.insert(elemento-1, pix_ng)
+    #print(screen)
+
+    # Codigo de representacion: ¿initil aqui?
+    # count = 1
+    # for caracter in screen:
+    #     if count == 10:
+    #         imagen = imagen + caracter + "\n"
+    #         count = 0
+    #     else:
+    #         imagen = imagen + caracter
+    #     count += 1
+
+    return tuple(screen), final
 
     
 
@@ -146,13 +158,16 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     print(imagen)
 
     # Marcador
-    #ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
+    # ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
     # print("="*ancho_marcador)
     # print("|", " "*(ancho_marcador-4), "|")
-    # print(f"|  Resultado:  {acumulado}  |")
+    print(f"|  Resultado:  {acumulado}  |")
     # print("|", " "*(ancho_marcador-4), "|")
     # print("="*ancho_marcador)
-    # print(f"\t+{resultado}")
+    print(f"\t+{resultado}")
+
+    print(f"Lineas: {lineas}")
+    print(f"Nivel: {nivel}")
 
 
 #=======================================#
@@ -171,7 +186,7 @@ def salida(figuras:dict):
     coordenadas = figura["1ini"]
 
     return figura, coordenadas
-
+    #return figuras["cuatro_inv"], figuras["cuatro_inv"]["1ini"]
 
 # Funcion de dibujado en patalla
 def figura_giros(figura:dict, coordenadas):
@@ -186,24 +201,41 @@ def figura_giros(figura:dict, coordenadas):
     if figura["nombre"]=="recta":
         nuevas_coordenadas = []
         if figura['posicion']==1:
-            for indice, x in enumerate(coordenadas):
-                if indice == 0:
-                    nuevas_coordenadas.append(x+1)
-                elif indice ==1:
-                    x = x + (10*indice)
-                    nuevas_coordenadas.append(x)
-                elif indice ==2:
-                    x = (x-1) + (10*indice)
-                    nuevas_coordenadas.append(x)
-                elif indice ==3:
-                    x = (x-2) + (10*indice)
-                    nuevas_coordenadas.append(x)
+            # Control para los giros a un pix del margen derecho
+            #print("Coordenadas figura_prueba/recta posicion 1 a posicion 0 al entrar: ", coordenadas, " ... /posicion:", figura["posicion"])
+            if len(list(filter(lambda x: x in limite_h_de_esp, coordenadas))) > 1 or len(list(filter(lambda x: x in limite_h_de, coordenadas))) > 1:
+                #print("ENTRO!!!!")
+                for indice, x in enumerate(coordenadas):
+                    if indice == 0:
+                        nuevas_coordenadas.append(x+2)
+                    elif indice ==1:
+                        x = x - (10*indice+1)
+                        nuevas_coordenadas.append(x+2)
+                    elif indice ==2:
+                        x = (x+1) - (10*indice+1)
+                        nuevas_coordenadas.append(x+2)
+                    elif indice ==3:
+                        x = (x+2) - (10*indice+1)
+                        nuevas_coordenadas.append(x+2)    
+            else:
+                for indice, x in enumerate(coordenadas):
+                    if indice == 0:
+                        nuevas_coordenadas.append(x+1)
+                    elif indice ==1:
+                        x = x + (10*indice)
+                        nuevas_coordenadas.append(x)
+                    elif indice ==2:
+                        x = (x-1) + (10*indice)
+                        nuevas_coordenadas.append(x)
+                    elif indice ==3:
+                        x = (x-2) + (10*indice)
+                        nuevas_coordenadas.append(x)
             figura['posicion'] = 0
             #print("Coordenadas figura_prueba/recta posicion 1 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             return nuevas_coordenadas
             
         elif figura['posicion']==0:
-            # Control para los giros a un pix del margen derecho
+            #print("Coordenadas figura_prueba/recta posicion 0 a posicion 1 al entrar: ", coordenadas, " ... /posicion:", figura["posicion"])
             for indice, x in enumerate(coordenadas):
                 if indice == 0:
                     nuevas_coordenadas.append(x-1)
@@ -370,6 +402,84 @@ def figura_giros(figura:dict, coordenadas):
         
     elif figura["nombre"]=="cuadrado":
         return coordenadas
+    
+    elif figura["nombre"]=="cuatro":
+        nuevas_coordenadas = []
+        if figura['posicion']==0:
+            #print("Coordenadas figura_prueba/cuatro posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x+9
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x+2
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x+11
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 1
+            return nuevas_coordenadas
+        
+        elif figura['posicion']==1:
+            #print("Coordenadas figura_prueba/cuatro posicion 1 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x-9
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x-2
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x-11
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 0
+            return nuevas_coordenadas
+        
+    elif figura["nombre"]=="cuatro_inv":
+        nuevas_coordenadas = []
+        if figura['posicion']==0:
+            #print(f"Coordenadas figura_prueba/{figura['nombre']} posicion 0 a posicion 1: ", coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x+9
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x+0
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x+8
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 1
+            #print("Coordenadas figura_prueba/cuatro_inv posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            return nuevas_coordenadas
+    
+        elif figura["posicion"]==1:
+            #print(f"Coordenadas figura_prueba/{figura['nombre']} posicion 1 a posicion 0: ", coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x-1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x-9
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x-8
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 0
+            #print("Coordenadas figura_prueba/cuatro_inv posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            return nuevas_coordenadas
             
 
 #=======================================#
@@ -520,7 +630,7 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->lis
     # Datos
     #print()
     #print(figura)
-    print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"], " / ", "lado:", lado, " / ", "coordenadas de entrada:", coordenadas_temporales )
+    #print("Nombre:", figura["nombre"], " / ", "Posicion:", figura["posicion"], " / ", "lado:", lado, " / ", "coordenadas de entrada:", coordenadas_temporales )
 
     if figura["nombre"] == "L":
     # Margen izquierdo
@@ -534,41 +644,57 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->lis
     elif figura["nombre"] == "L_inv":
     # Margen derecho
         if lado:
-            print("Lado derecho")
+            #print("Lado derecho")
             if figura['posicion'] == 1:
                 coordenadas_nuevas = map(lambda x: x-1, coordenadas_temporales)
                 coordenadas_nuevas = list(coordenadas_nuevas)
-                print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return coordenadas_nuevas
     # Margen izquierdo
         elif lado is False:
-            print("Lado izquierdo")
+            #print("Lado izquierdo")
             if figura["posicion"] == 3:
                 coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
-                print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return coordenadas_nuevas
             
     elif figura["nombre"] == "recta":
-        print("Figura recta")
+        #print("Figura recta")
     # Margen izquierdo
         if lado is False:
-            print("Lado izquierdo")
+            #print("Lado izquierdo")
             if figura['posicion'] == 1:
-                print("Figura posicion 1")
+                #print("Figura posicion 1")
                 coordenadas_nuevas = map(lambda x: x+1, coordenadas_temporales)
-                print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return list(coordenadas_nuevas)
     # Margen derecho
         if lado and figura['posicion'] == 1:
-            print("Lado derecho")
+            #print("Lado derecho")
             coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_temporales))
-            print("Casi Pegada", coordenadas_nuevas)
+            #print("Casi Pegada", coordenadas_nuevas)
             if filter(lambda x: x in limite_h_de, coordenadas_nuevas):
                 coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_nuevas))
-                print("Pegada", coordenadas_nuevas)
+                #print("Pegada", coordenadas_nuevas)
+                return coordenadas_nuevas
+            
+    elif figura["nombre"] == "cuatro":
+    # Margen izquierdo
+        if lado is False:
+            if figura['posicion'] == 0:
+                coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                return coordenadas_nuevas
+            
+    elif figura["nombre"] == "cuatro_inv":
+    # Margen derecho
+        if lado:
+            if figura['posicion'] == 0:
+                coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_temporales))
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return coordenadas_nuevas
         
-    print("Ninguno de los supuestos")
+    #print("Ninguno de los supuestos")
     return coordenadas_temporales
 
 
@@ -599,14 +725,43 @@ def mov_auto():
     while not cerrojo:
         evento_1.wait()
 
-    t = 1
-    count = 1
+    # Los niveles. La variable t controla la velocidad de caida. Dentro del bucle
+    def tiempo():
+        match nivel:
+            case 1:
+                t = 2
+                return t
+            case 2:
+                t = 1.8
+                return t
+            case 3:
+                t = 1.6
+                return t
+            case 4:
+                t = 1.4
+                return t
+            case 5:
+                t = 1.2
+                return t
+            case 6:
+                t = 1
+                return t
+            case 7:
+                t = 0.8
+                return t
+            case 9:
+                t = 0.6
+                return t
+            case 10:
+                t = 0.4
+                return t
 
     global coordenadas
     global control
     
     while True:
-        time.sleep(2)
+        t = tiempo()
+        time.sleep(t)
         coordenadas = cod_mov_auto(coordenadas, ancho)
         #pantalla_prueba(coordenadas, screen)
         if control:
@@ -866,6 +1021,45 @@ def marcador(count:int, acumulado):
 #=======================================#
 
 
+# NIVELES
+
+# Funcion que controla los niveles: la velocidad de caida y el reinicio de la pantalla
+def fases():
+
+    #niveles = list(range(1, 11))
+    niveles = list(range(1,11))
+
+    # for nivel in niveles:
+    #     if lineas < nivel*10:
+    #         reinicio = False
+    #         return nivel, reinicio
+    #     elif lineas == nivel*10:
+    #         reinicio = True
+    #         if nivel == 10:
+    #             return nivel, reinicio
+    #         return nivel + 1, reinicio
+    #     elif lineas > 100:
+    #         nivel = 10
+    #         reinicio = False
+    #         return nivel, reinicio
+
+    for nivel in niveles:
+        if lineas < nivel*2:
+            reinicio = False
+            return nivel, reinicio
+        elif lineas == nivel*2:
+            reinicio = True
+            if nivel == 10:
+                return nivel, reinicio
+            return nivel + 1, reinicio
+        elif lineas > 100:
+            nivel = 10
+            reinicio = False
+            return nivel, reinicio
+
+
+#=======================================#
+
 def logica():
     "coordina todo, enviando los parametros al resto de funciones"
     pass
@@ -893,11 +1087,14 @@ if __name__ == "__main__":
     hilos = True
     comienzo = True
     lista_colision = []
-    count = 0
     control = False
     cerrojo = True
+    count = 0
     acumulado = 0
     resultado = 0
+    lineas = 0
+    nivel = 1
+    reinicio = False
 
 
     # Cabecera
@@ -924,12 +1121,16 @@ if __name__ == "__main__":
 
         # Bloque de inicio/reinicio
         if comienzo:
-            #print("COMIENZO")
+            print("COMIENZO")
             figura, coordenadas = salida(recursos.figuras)
             comienzo = False
             #fijacion = False
             #coordenadas = figura_prueba(figura)
+            #print(F"Coordenadas: {coordenadas}, figura: {figura["nombre"]}, posicion: {figura["posicion"]}")
             pantalla_prueba(coordenadas, screen)
+            if reinicio:
+                time.sleep(2)
+                reinicio = False
             #print(coordenadas)
 
         # Bloque de pantalla: Quizas lo suyo seria que se refrescara solo haya cambios en coordenadas, en vez de un sleep().
@@ -951,7 +1152,7 @@ if __name__ == "__main__":
             hilo_auto.start()
             hilo_teclado.start()
             hilos = False
-            #print("HILOS")
+            print("HILOS")
 
         #===========================================#
 
@@ -961,16 +1162,22 @@ if __name__ == "__main__":
 
         # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
-            #print("CONTROLES")
-            cerrojo = False                                                             # Variable de control de los eventos para los hilos
+            print("CONTROLES")
+            cerrojo = False                                                     # Variable de control de los eventos para los hilos
             coordenadas = control_invasion(coordenadas, lista_colision)
-            screen = pantalla_pix(coordenadas, screen)
+            screen, final = pantalla_pix(coordenadas, screen)                          # Añadir una comprobacion al limite superior
+            # Comprobacion final de partida.
+            if final:
+                pantalla_prueba(coordenadas, screen)
+                print("\n"*2 + "\t"*9 + "GAME OVER")
+                break
             pantalla_prueba(coordenadas, screen)
             lista_colision = indices_colision(coordenadas, lista_colision)
             #print("Lista de colision: ", lista_colision)
             comienzo = True
             # Aqui iria el condicional para controlar la filas resueltas
             while True:
+                print("ELIMINACION")
                 boleano, indice = filas_mejorada(screen)
                 if not boleano:
                     break
@@ -980,9 +1187,17 @@ if __name__ == "__main__":
                 pantalla_prueba(coordenadas, screen)
                 time.sleep(1.5)
                 count += 1
-            # Marcador
+            # Marcador // Niveles
             if count:
+                print("MARCADOR")
                 acumulado, resultado = marcador(count, acumulado)
+                lineas = lineas + count
+                # Comprobacion de niveles
+                nivel, reinicio = fases()
+                if reinicio:
+                    print("REINICIO")
+                    screen, final = pantalla_pix(coordenadas, screen)
+                    lista_colision = []
                 count = 0
 
 
