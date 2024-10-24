@@ -161,13 +161,13 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     # ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
     # print("="*ancho_marcador)
     # print("|", " "*(ancho_marcador-4), "|")
-    print(f"|  Resultado:  {acumulado}  |")
+    # print(f"|  Resultado:  {acumulado}  |")
     # print("|", " "*(ancho_marcador-4), "|")
     # print("="*ancho_marcador)
-    print(f"\t+{resultado}")
+    # print(f"\t+{resultado}")
 
-    print(f"Lineas: {lineas}")
-    print(f"Nivel: {nivel}")
+    # print(f"Lineas: {lineas}")
+    # print(f"Nivel: {nivel}")
 
 
 #=======================================#
@@ -186,7 +186,7 @@ def salida(figuras:dict):
     coordenadas = figura["1ini"]
 
     return figura, coordenadas
-    #return figuras["cuatro_inv"], figuras["cuatro_inv"]["1ini"]
+    #return figuras["recta"], figuras["recta"]["1ini"]
 
 # Funcion de dibujado en patalla
 def figura_giros(figura:dict, coordenadas):
@@ -480,6 +480,80 @@ def figura_giros(figura:dict, coordenadas):
             figura['posicion'] = 0
             #print("Coordenadas figura_prueba/cuatro_inv posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
             return nuevas_coordenadas
+        
+    elif figura["nombre"]=="__|__":
+        nuevas_coordenadas = []
+        if figura['posicion']==0:
+            #print("Coordenadas figura_prueba/__|__ posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x+0
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x+9
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 1
+            return nuevas_coordenadas
+    
+        elif figura["posicion"]==1:
+            #print("Coordenadas figura_prueba/__|__ posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x-1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x-10
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x-10
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x-10
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 2
+            return nuevas_coordenadas
+        
+        elif figura["posicion"]==2:
+            #print("Coordenadas figura_prueba/__|__ posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x+9
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x+9
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x+10
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 3
+            return nuevas_coordenadas
+        
+        elif figura["posicion"]==3:
+            #print("Coordenadas figura_prueba/__|__ posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", figura["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x-9
+                    nuevas_coordenadas.append(x)
+            figura['posicion'] = 0
+            return nuevas_coordenadas
             
 
 #=======================================#
@@ -669,7 +743,7 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->lis
                 #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return list(coordenadas_nuevas)
     # Margen derecho
-        if lado and figura['posicion'] == 1:
+        elif lado and figura['posicion'] == 1:
             #print("Lado derecho")
             coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_temporales))
             #print("Casi Pegada", coordenadas_nuevas)
@@ -691,6 +765,19 @@ def funcion_correctora(figura:dict, coordenadas_temporales:list, lado:bool)->lis
         if lado:
             if figura['posicion'] == 0:
                 coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_temporales))
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                return coordenadas_nuevas
+            
+    elif figura["nombre"] == "__|__":
+    # Margen derecho
+        if lado:
+            if figura['posicion'] == 0:
+                coordenadas_nuevas = list(map(lambda x: x-1, coordenadas_temporales))
+                #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
+                return coordenadas_nuevas
+        elif lado is False:
+            if figura['posicion'] == 2:
+                coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
                 #print("coordenadas nuevas retornadas: ", coordenadas_nuevas)
                 return coordenadas_nuevas
         
@@ -1029,6 +1116,7 @@ def fases():
     #niveles = list(range(1, 11))
     niveles = list(range(1,11))
 
+    # Rango de los niveles
     # for nivel in niveles:
     #     if lineas < nivel*10:
     #         reinicio = False
@@ -1043,6 +1131,7 @@ def fases():
     #         reinicio = False
     #         return nivel, reinicio
 
+# Para pruebas, acortando los niveles:
     for nivel in niveles:
         if lineas < nivel*2:
             reinicio = False
@@ -1052,7 +1141,7 @@ def fases():
             if nivel == 10:
                 return nivel, reinicio
             return nivel + 1, reinicio
-        elif lineas > 100:
+        elif lineas > 20:
             nivel = 10
             reinicio = False
             return nivel, reinicio

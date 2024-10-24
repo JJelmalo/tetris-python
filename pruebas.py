@@ -562,15 +562,68 @@ cuatro_inv = {"1ini" : (5, 6, 16, 17),
 (-1, -9, 0, -8)
 
 
+# GIRO "verde"
+
+verde = {"1ini" : (5, 14, 15, 16),
+         "2ini" : (5, 15, 16, 25),
+         "3ini" : (4, 5, 6, 15),
+         "4ini" : (5, 14, 15, 25),}
+
+# De la pos 0 a la pos 1:
+(0, +1, +1, +9)
+# De la pos 1 a la pos 2:
+(-1, -10, -10, -10)
+# De la pos 2 a la pos 3:
+(+1, +9, +9, +10)
+# De la pos 3 a la pos 0:
+(0, 0, 0, -9)
+
+
 # Funcion para probar los giros
 def funcion_giros(coordenadas:tuple, posicion:int)->list:
 
-    recursos.figuras['cuatro_inv']['posicion'] = posicion
+    recursos.figuras['__|__']['posicion'] = posicion
     
-    if recursos.figuras['cuatro_inv']["nombre"]=="cuatro_inv":
+    if recursos.figuras['__|__']["nombre"]=="__|__":
         nuevas_coordenadas = []
-        if recursos.figuras['cuatro_inv']['posicion']==0:
-            print("Coordenadas figura_prueba/cuatro_inv posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['cuatro_inv']["posicion"])
+        if recursos.figuras['__|__']['posicion']==0:
+            print("Coordenadas figura_prueba/__|__ posicion 0 a posicion 1: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['__|__']["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x+0
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x+1
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x+9
+                    nuevas_coordenadas.append(x)
+            recursos.figuras['__|__']['posicion'] = 1
+            return nuevas_coordenadas
+    
+        elif recursos.figuras['__|__']["posicion"]==1:
+            print("Coordenadas figura_prueba/__|__ posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['__|__']["posicion"])
+            for indice, x in enumerate(coordenadas):
+                if indice==0:
+                    x = x-1
+                    nuevas_coordenadas.append(x)
+                elif indice==1:
+                    x = x-10
+                    nuevas_coordenadas.append(x)
+                elif indice==2:
+                    x = x-10
+                    nuevas_coordenadas.append(x)
+                elif indice==3:
+                    x = x-10
+                    nuevas_coordenadas.append(x)
+            recursos.figuras['__|__']['posicion'] = 2
+            return nuevas_coordenadas
+        
+        elif recursos.figuras['__|__']["posicion"]==2:
+            print("Coordenadas figura_prueba/__|__ posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['__|__']["posicion"])
             for indice, x in enumerate(coordenadas):
                 if indice==0:
                     x = x+1
@@ -579,67 +632,32 @@ def funcion_giros(coordenadas:tuple, posicion:int)->list:
                     x = x+9
                     nuevas_coordenadas.append(x)
                 elif indice==2:
-                    x = x+0
+                    x = x+9
                     nuevas_coordenadas.append(x)
                 elif indice==3:
-                    x = x+8
+                    x = x+10
                     nuevas_coordenadas.append(x)
-            recursos.figuras['cuatro_inv']['posicion'] = 1
+            recursos.figuras['__|__']['posicion'] = 3
             return nuevas_coordenadas
-    
-        elif recursos.figuras['cuatro_inv']["posicion"]==1:
-            print("Coordenadas figura_prueba/cuatro_inv posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['cuatro_inv']["posicion"])
+        
+        elif recursos.figuras['__|__']["posicion"]==3:
+            print("Coordenadas figura_prueba/__|__ posicion 1 a posicion 2: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['__|__']["posicion"])
             for indice, x in enumerate(coordenadas):
                 if indice==0:
-                    x = x-1
+                    x = x
                     nuevas_coordenadas.append(x)
                 elif indice==1:
-                    x = x-9
+                    x = x
                     nuevas_coordenadas.append(x)
                 elif indice==2:
                     x = x
                     nuevas_coordenadas.append(x)
                 elif indice==3:
-                    x = x-8
+                    x = x-9
                     nuevas_coordenadas.append(x)
-            recursos.figuras['cuatro_inv']['posicion'] = 0
+            recursos.figuras['__|__']['posicion'] = 0
             return nuevas_coordenadas
-    
-        # elif recursos.figuras['L_inv']["posicion"]==2:
-        #     print("Coordenadas figura_prueba/L_inv posicion 2 a posicion 3: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['L_inv']["posicion"])
-        #     for indice, x in enumerate(coordenadas):
-        #         if indice==0:
-        #             x = x-1
-        #             nuevas_coordenadas.append(x)
-        #         elif indice==1:
-        #             x = x-1
-        #             nuevas_coordenadas.append(x)
-        #         elif indice==2:
-        #             x = x-9
-        #             nuevas_coordenadas.append(x)
-        #         elif indice==3:
-        #             x = x-9
-        #             nuevas_coordenadas.append(x)
-        #     recursos.figuras['L_inv']['posicion'] = 3
-        #     return nuevas_coordenadas
 
-        # elif recursos.figuras['L_inv']["posicion"]==3:
-        #     print("Coordenadas figura_prueba/L_inv posicion 3 a posicion 0: ", nuevas_coordenadas, " ... /posicion:", recursos.figuras['L_inv']["posicion"])
-        #     for indice, x in enumerate(coordenadas):
-        #         if indice==0:
-        #             x = x+1
-        #             nuevas_coordenadas.append(x)
-        #         elif indice==1:
-        #             x = x+10
-        #             nuevas_coordenadas.append(x)
-        #         elif indice==2:
-        #             x = x+19
-        #             nuevas_coordenadas.append(x)
-        #         elif indice==3:
-        #             x = x+8
-        #             nuevas_coordenadas.append(x)
-        #     recursos.figuras['L_inv']['posicion'] = 0
-        #     return nuevas_coordenadas
     
     return coordenadas
 
@@ -689,7 +707,6 @@ def funcion_giros(coordenadas:tuple, posicion:int)->list:
 #   las coordenadas de los giros. Con un testigo exportado de la funcion que controla los limites horizontales, o relizando el propio control 
 #   previo cada vez que gira en la funcion de giro.
 #   . ¿Añadir la proxima pieza en salir?
-#   . Añadir la pieza que falta __|__
 #   . Mejorar visualmente el marcador.
 
 # Bugs:
@@ -727,8 +744,14 @@ if __name__ == "__main__":
     #print(pantalla)
 
     # Representacion de los giros en pantalla
-    main.pantalla_prueba(cuatro_inv["1ini"], main.screen)
-    coordenadas = funcion_giros(cuatro_inv["1ini"], 0)
+    main.pantalla_prueba(verde["1ini"], main.screen)
+    coordenadas = funcion_giros(verde["1ini"], 0)
+    main.pantalla_prueba(coordenadas, main.screen)
+    coordenadas = funcion_giros(verde["2ini"], 1)
+    main.pantalla_prueba(coordenadas, main.screen)
+    coordenadas = funcion_giros(verde["3ini"], 2)
+    main.pantalla_prueba(coordenadas, main.screen)
+    coordenadas = funcion_giros(verde["4ini"], 3)
     main.pantalla_prueba(coordenadas, main.screen)
 
 
