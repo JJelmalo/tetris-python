@@ -40,7 +40,7 @@
 
 
 from getpass import getpass
-from random import randint
+from random import randint, choice
 
 import recursos, mov_teclado, pruebas
 #import mov_auto
@@ -166,7 +166,7 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     # print("="*ancho_marcador)
     # print(f"\t+{resultado}")
 
-    # print(f"Lineas: {lineas}")
+    # print(f"\nLineas: {lineas}")
     # print(f"Nivel: {nivel}")
 
 
@@ -187,6 +187,25 @@ def salida(figuras:dict):
 
     return figura, coordenadas
     #return figuras["recta"], figuras["recta"]["1ini"]
+
+"""
+# Funcion para la seleccion de nuevas piezas - reseteo
+def salida(figura:dict):
+
+    figura["posicion"] = 0
+    coordenadas = figura["1ini"]
+
+    #return figura, coordenadas
+    return coordenadas
+    
+
+# Funcion para la seleccion
+def seleccion():
+
+    figura = choice(list(recursos.figuras.items()))
+
+    return figura[1]
+"""
 
 # Funcion de dibujado en patalla
 def figura_giros(figura:dict, coordenadas):
@@ -571,7 +590,7 @@ def limites_figura_horizontal(coordenadas:list, movimiento:int, giro:bool):
     limite = None
 
     
-    #print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro},", figura['posicion'])
+    print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro},", figura['posicion'])
     #print("Limite horizontal izquierdo: ", limite_h_iz)
     #print("Limite horizontal derecho: ", limite_h_de)
 
@@ -1117,34 +1136,34 @@ def fases():
     niveles = list(range(1,11))
 
     # Rango de los niveles
-    # for nivel in niveles:
-    #     if lineas < nivel*10:
-    #         reinicio = False
-    #         return nivel, reinicio
-    #     elif lineas == nivel*10:
-    #         reinicio = True
-    #         if nivel == 10:
-    #             return nivel, reinicio
-    #         return nivel + 1, reinicio
-    #     elif lineas > 100:
-    #         nivel = 10
-    #         reinicio = False
-    #         return nivel, reinicio
-
-# Para pruebas, acortando los niveles:
     for nivel in niveles:
-        if lineas < nivel*2:
+        if lineas < nivel*10:
             reinicio = False
             return nivel, reinicio
-        elif lineas == nivel*2:
+        elif lineas == nivel*10:
             reinicio = True
             if nivel == 10:
                 return nivel, reinicio
             return nivel + 1, reinicio
-        elif lineas > 20:
+        elif lineas > 100:
             nivel = 10
             reinicio = False
             return nivel, reinicio
+
+# Para pruebas, acortando los niveles:
+    # for nivel in niveles:
+    #     if lineas < nivel*2:
+    #         reinicio = False
+    #         return nivel, reinicio
+    #     elif lineas == nivel*2:
+    #         reinicio = True
+    #         if nivel == 10:
+    #             return nivel, reinicio
+    #         return nivel + 1, reinicio
+    #     elif lineas > 20:
+    #         nivel = 10
+    #         reinicio = False
+    #         return nivel, reinicio
 
 
 #=======================================#
@@ -1175,6 +1194,7 @@ if __name__ == "__main__":
     
     hilos = True
     comienzo = True
+    nueva_pieza = False     # Variable para controlar la visualizacion de la siguiente pieza
     lista_colision = []
     control = False
     cerrojo = True
@@ -1184,6 +1204,10 @@ if __name__ == "__main__":
     lineas = 0
     nivel = 1
     reinicio = False
+
+    # figura = seleccion()
+    # figura_proxima = seleccion()
+    # print(f"Figura en juego: {figura["1ini"]}, figura nombre: {figura['nombre']}, figura posicion: {figura['posicion']}")
 
 
     # Cabecera
@@ -1212,6 +1236,10 @@ if __name__ == "__main__":
         if comienzo:
             print("COMIENZO")
             figura, coordenadas = salida(recursos.figuras)
+            #---------------------#
+            #coordenadas = salida(figura)
+            #figura = figura_proxima
+            #---------------------#
             comienzo = False
             #fijacion = False
             #coordenadas = figura_prueba(figura)
@@ -1255,6 +1283,11 @@ if __name__ == "__main__":
             cerrojo = False                                                     # Variable de control de los eventos para los hilos
             coordenadas = control_invasion(coordenadas, lista_colision)
             screen, final = pantalla_pix(coordenadas, screen)                          # Añadir una comprobacion al limite superior
+            print(f"Figura en juego: {coordenadas}, figura nombre: {figura['nombre']}, figura posicion: {figura['posicion']}")
+            # Seleccion de pieza para el turno siguiente
+            #---------------------#
+            #figura_proxima = seleccion()
+            #---------------------#
             # Comprobacion final de partida.
             if final:
                 pantalla_prueba(coordenadas, screen)
@@ -1264,7 +1297,7 @@ if __name__ == "__main__":
             lista_colision = indices_colision(coordenadas, lista_colision)
             #print("Lista de colision: ", lista_colision)
             comienzo = True
-            # Aqui iria el condicional para controlar la filas resueltas
+            # Gestion de las filas resueltas
             while True:
                 print("ELIMINACION")
                 boleano, indice = filas_mejorada(screen)

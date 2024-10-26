@@ -84,7 +84,7 @@ matriz.reverse()
 
 
 import threading
-from random import randint
+from random import randint, choice, choices
 import time
 
 import main, recursos
@@ -666,6 +666,27 @@ def funcion_giros(coordenadas:tuple, posicion:int)->list:
 #===============================================#
 
 
+# Funcion para la seleccion de nuevas piezas - reseteo
+def salida():
+
+    coordenadas = figura["1ini"]
+
+    #return figura, coordenadas
+    return coordenadas
+    
+
+# Funcion para la seleccion
+def seleccion():
+
+    figura = choice(list(recursos.figuras.items()))
+
+    return figura[1]
+
+
+
+#===============================================#
+
+
 # Proyecto para la coreccion de la correccion de los giros de las rectas cuando estan pegadas a la izquierda
 
             # if len(list(filter(lambda x: x in limite_h_de_esp, coordenadas))) > 1 or len(list(filter(lambda x: x in limite_h_de, coordenadas))) > 1:
@@ -707,7 +728,12 @@ def funcion_giros(coordenadas:tuple, posicion:int)->list:
 #   las coordenadas de los giros. Con un testigo exportado de la funcion que controla los limites horizontales, o relizando el propio control 
 #   previo cada vez que gira en la funcion de giro.
 #   . ¿Añadir la proxima pieza en salir?
-#   . Mejorar visualmente el marcador.
+#       1. Podria dividir el codigo/funcionalidad la funcion salida en dos, una que seleccione la figura (proxima) y otra que devuelva las 
+#       las coordenadas.
+#       2. Se trata de seleccionar la siguiente figura antes de la fase de comienzo o al final de la misma.
+#       3. Podria crear una funcion a modo de testigo para indicar el cambio y seleccion de nuevas piezas. Esta funcion introducida por un 
+#       por un condicional seria sleeccionada por la funcion encargada de las selecciones y dibujada por la funcion encargada del dibujo.
+#   . Mejorar visualmente el marcador
 
 # Bugs:
 #   . Posible bug con los margenes de los cuadrados al colocarlos
@@ -744,15 +770,20 @@ if __name__ == "__main__":
     #print(pantalla)
 
     # Representacion de los giros en pantalla
-    main.pantalla_prueba(verde["1ini"], main.screen)
-    coordenadas = funcion_giros(verde["1ini"], 0)
-    main.pantalla_prueba(coordenadas, main.screen)
-    coordenadas = funcion_giros(verde["2ini"], 1)
-    main.pantalla_prueba(coordenadas, main.screen)
-    coordenadas = funcion_giros(verde["3ini"], 2)
-    main.pantalla_prueba(coordenadas, main.screen)
-    coordenadas = funcion_giros(verde["4ini"], 3)
-    main.pantalla_prueba(coordenadas, main.screen)
+    # main.pantalla_prueba(verde["1ini"], main.screen)
+    # coordenadas = funcion_giros(verde["1ini"], 0)
+    # main.pantalla_prueba(coordenadas, main.screen)
+    # coordenadas = funcion_giros(verde["2ini"], 1)
+    # main.pantalla_prueba(coordenadas, main.screen)
+    # coordenadas = funcion_giros(verde["3ini"], 2)
+    # main.pantalla_prueba(coordenadas, main.screen)
+    # coordenadas = funcion_giros(verde["4ini"], 3)
+    # main.pantalla_prueba(coordenadas, main.screen)
+
+    figura = seleccion()
+    coordenadas = salida()
+    print(coordenadas)
+    print(figura)
 
 
 
