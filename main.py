@@ -121,7 +121,7 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     'Dibuja la figura en la pantalla'
 
     # Borramos la pantalla
-    #os.system("cls")
+    os.system("cls")
 
     # Creamos la pantalla en blanco-scream y asi nos evitamos pasarla por parametro. Usamos el guion bajo.
     screen = list(screen)
@@ -158,16 +158,16 @@ def pantalla_prueba(coordenadas:list, screen:tuple):
     print(imagen)
 
     # Marcador
-    # ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
-    # print("="*ancho_marcador)
-    # print("|", " "*(ancho_marcador-4), "|")
-    # print(f"|  Resultado:  {acumulado}  |")
-    # print("|", " "*(ancho_marcador-4), "|")
-    # print("="*ancho_marcador)
-    # print(f"\t+{resultado}")
+    ancho_marcador = len(f"|  Resultado:  {acumulado}  |")
+    print("="*ancho_marcador)
+    print("|", " "*(ancho_marcador-4), "|")
+    print(f"|  Resultado:  {acumulado}  |")
+    print("|", " "*(ancho_marcador-4), "|")
+    print("="*ancho_marcador)
+    print(f"\t+{resultado}")
 
-    # print(f"\nLineas: {lineas}")
-    # print(f"Nivel: {nivel}")
+    print(f"\nLineas: {lineas}")
+    print(f"Nivel: {nivel}")
 
 
 #=======================================#
@@ -590,7 +590,7 @@ def limites_figura_horizontal(coordenadas:list, movimiento:int, giro:bool):
     limite = None
 
     
-    print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro},", figura['posicion'])
+    #print(f"Limite_figura_horizontal: {coordenadas}, {movimiento}, {giro},", figura['posicion'])
     #print("Limite horizontal izquierdo: ", limite_h_iz)
     #print("Limite horizontal derecho: ", limite_h_de)
 
@@ -958,7 +958,7 @@ def calculo_movimiento_hilo(coordenadas:list, movimiento:recursos.Movimiento):
             if limite:
             # giro de la figura
                 coordenadas_temporales = figura_giros(figura, coordenadas)
-                print("Giro sin corregir:", coordenadas_temporales, f"figura posicion: {figura["posicion"]}")
+                #print("Giro sin corregir:", coordenadas_temporales, f"figura posicion: {figura["posicion"]}")
                 coordenadas_nuevas = funcion_correctora(figura, coordenadas_temporales, lado)
 
                 #coordenadas_nuevas = list(map(lambda x: x+1, coordenadas_temporales))
@@ -1034,7 +1034,7 @@ def filas_mejorada(screen:tuple):
 
     # Comprobamos fila por fila, comenzando por la ultima, si estan completas
     row = []
-    print(len(screen))
+    #print(len(screen))
     for ind, fila in enumerate(matriz):
         for elem in fila:
             if screen[elem-1] == pix_ng:
@@ -1082,7 +1082,7 @@ def come_filas_mejorado(screen:tuple, indice:int, lista_colision:int)->tuple:
     #print("Indices de colision en come filas", indices_colision)
     #print("Lista de colision en come_filas antes de actualizar los indices restantes", lista_colision)
     for x in indices_colision:
-        print(x)
+        #print(x)
         lista_colision.remove(x)
     #print("Lista de colision en come_filas despues de actualizar los indices restantes", lista_colision)
     #print("Numero a partir del cual deberia ser sumados: ", min(recursos.matriz[indice]))
@@ -1234,7 +1234,7 @@ if __name__ == "__main__":
 
         # Bloque de inicio/reinicio
         if comienzo:
-            print("COMIENZO")
+            #print("COMIENZO")
             figura, coordenadas = salida(recursos.figuras)
             #---------------------#
             #coordenadas = salida(figura)
@@ -1269,7 +1269,7 @@ if __name__ == "__main__":
             hilo_auto.start()
             hilo_teclado.start()
             hilos = False
-            print("HILOS")
+            #print("HILOS")
 
         #===========================================#
 
@@ -1279,11 +1279,11 @@ if __name__ == "__main__":
 
         # Bloque de control
         if limites_vertical(coordenadas) or colision(coordenadas, lista_colision):
-            print("CONTROLES")
+            #print("CONTROLES")
             cerrojo = False                                                     # Variable de control de los eventos para los hilos
             coordenadas = control_invasion(coordenadas, lista_colision)
             screen, final = pantalla_pix(coordenadas, screen)                          # Añadir una comprobacion al limite superior
-            print(f"Figura en juego: {coordenadas}, figura nombre: {figura['nombre']}, figura posicion: {figura['posicion']}")
+            #print(f"Figura en juego: {coordenadas}, figura nombre: {figura['nombre']}, figura posicion: {figura['posicion']}")
             # Seleccion de pieza para el turno siguiente
             #---------------------#
             #figura_proxima = seleccion()
@@ -1299,7 +1299,7 @@ if __name__ == "__main__":
             comienzo = True
             # Gestion de las filas resueltas
             while True:
-                print("ELIMINACION")
+                #print("ELIMINACION")
                 boleano, indice = filas_mejorada(screen)
                 if not boleano:
                     break
@@ -1311,13 +1311,13 @@ if __name__ == "__main__":
                 count += 1
             # Marcador // Niveles
             if count:
-                print("MARCADOR")
+                #print("MARCADOR")
                 acumulado, resultado = marcador(count, acumulado)
                 lineas = lineas + count
                 # Comprobacion de niveles
                 nivel, reinicio = fases()
                 if reinicio:
-                    print("REINICIO")
+                    #print("REINICIO")
                     screen, final = pantalla_pix(coordenadas, screen)
                     lista_colision = []
                 count = 0
@@ -1363,4 +1363,4 @@ pantalla_prueba(coordenadas, screen)
 # (4, 5, 6, 7)
 # -1, -10, -19, -28
 
-print(2//10)
+#print(2//10)
